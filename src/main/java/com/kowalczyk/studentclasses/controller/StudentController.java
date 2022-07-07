@@ -37,4 +37,23 @@ public class StudentController {
         return ResponseEntity.ok(students.get(email));
     }
 
+    @PutMapping("/{email}")
+    public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody Student newStudentData) {
+        if (!students.containsKey(email)){
+            throw new StudentNotFoundException();
+        }
+        if (newStudentData.getEmail() == null){
+            return ResponseEntity.badRequest().body("email cannot be null");
+        }
+
+        Student student = students.get(email);
+        student.setName(newStudentData.getName());
+
+        return null;
+                        //Praca domowa:
+                        // dokonczyc returna
+                        // zmienic pozostale wartosci studenta
+                        // jesli zmienil sie email to usunac studenta ze starym emailem z mapy i dodac
+                        // nowego z nowym emailem
+    }
 }
