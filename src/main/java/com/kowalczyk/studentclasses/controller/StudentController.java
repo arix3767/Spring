@@ -2,7 +2,6 @@ package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
 import com.kowalczyk.studentclasses.model.Student;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,12 +49,8 @@ public class StudentController {
         student.setRate(newStudentData.getRate());
         student.setTeacher(newStudentData.getTeacher());
         student.setEmail(newStudentData.getEmail());
-//        if (!student.getEmail().equals(newStudentData.getEmail())) {
-//            String newEmail;
-//            newEmail = newStudentData.getEmail();
-//            students.put(newEmail, student);
-//        }
-
+        students.remove(email);
+        students.put(newStudentData.getEmail(),student);
         return ResponseEntity.ok("student data changed successfuly");
     }
 
@@ -70,13 +65,12 @@ public class StudentController {
     }
 
     @PatchMapping("/{email}")
-    public ResponseEntity<String> updateRate(@PathVariable String email, @RequestBody Student newStudentData) {
+    public ResponseEntity<String> updateRate(@PathVariable String email, @RequestBody float rate) {
         if (!students.containsKey(email)) {
             throw new StudentNotFoundException();
         }
         Student student = students.get(email);
-        student.setRate(newStudentData.getRate());
+        student.setRate(rate);
         return ResponseEntity.ok("Rate changed successfuly");
     }
-
 }
