@@ -39,21 +39,44 @@ public class StudentController {
 
     @PutMapping("/{email}")
     public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody Student newStudentData) {
-        if (!students.containsKey(email)){
+        if (!students.containsKey(email)) {
             throw new StudentNotFoundException();
         }
-        if (newStudentData.getEmail() == null){
+        if (newStudentData.getEmail() == null) {
             return ResponseEntity.badRequest().body("email cannot be null");
         }
-
         Student student = students.get(email);
         student.setName(newStudentData.getName());
+        student.setRate(newStudentData.getRate());
+        student.setTeacher(newStudentData.getTeacher());
+        student.setEmail(newStudentData.getEmail());
+//        if (!student.getEmail().equals(newStudentData.getEmail())) {
+//            String newEmail;
+//            newEmail = newStudentData.getEmail();
+//            students.put(newEmail, student);
+//        }
 
-        return null;
-                        //Praca domowa:
-                        // dokonczyc returna
-                        // zmienic pozostale wartosci studenta
-                        // jesli zmienil sie email to usunac studenta ze starym emailem z mapy i dodac
-                        // nowego z nowym emailem
+        return ResponseEntity.ok("student data changed successfuly");
     }
+
+    @DeleteMapping("/{email}")
+    public ResponseEntity<String> deleteStudent(@PathVariable String email) {
+        if (!students.containsKey(email)) {
+            throw new StudentNotFoundException();
+        }
+        Student student = students.get(email);
+        students.remove(email, student);
+        return ResponseEntity.ok("Student removed successfuly");
+    }
+
+    @PatchMapping("/{email}")
+    public ResponseEntity<String> updateRate(@PathVariable String email, @RequestBody Student newStudentData) {
+        if (!students.containsKey(email)) {
+            throw new StudentNotFoundException();
+        }
+        Student student = students.get(email);
+        student.setRate(newStudentData.getRate());
+        return ResponseEntity.ok("Rate changed successfuly");
+    }
+
 }
