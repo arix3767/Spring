@@ -1,5 +1,6 @@
 package com.kowalczyk.studentclasses.controller;
 
+import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
 import com.kowalczyk.studentclasses.model.Student;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,10 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<String> addStudent(@RequestBody Student student) {
         if (students.containsKey(student.getEmail())) {
-            return ResponseEntity.badRequest().body("Student already exists!");
+            return ResponseEntity.badRequest().body(Messages.STUDENT_ADD_FAILED.getText());
         }
         students.put(student.getEmail(), student);
-        return ResponseEntity.ok("Student added successfully!");
+        return ResponseEntity.ok(Messages.STUDENT_ADD_SUCCESS.getText());
     }
 
     @GetMapping("/{email}")
@@ -42,7 +43,7 @@ public class StudentController {
             throw new StudentNotFoundException();
         }
         if (newStudentData.getEmail() == null) {
-            return ResponseEntity.badRequest().body("email cannot be null");
+            return ResponseEntity.badRequest().body(Messages.STUDENT_EDIT_FAILED.getText());
         }
         Student student = students.get(email);
         student.setName(newStudentData.getName());
@@ -51,7 +52,7 @@ public class StudentController {
         student.setEmail(newStudentData.getEmail());
         students.remove(email);
         students.put(newStudentData.getEmail(),student);
-        return ResponseEntity.ok("student data changed successfuly");
+        return ResponseEntity.ok(Messages.STUDENT_EDIT_SUCCESS.getText());
     }
 
     @DeleteMapping("/{email}")
@@ -61,7 +62,7 @@ public class StudentController {
         }
         Student student = students.get(email);
         students.remove(email, student);
-        return ResponseEntity.ok("Student removed successfuly");
+        return ResponseEntity.ok(Messages.STUDENT_DELETE_SUCCESS.getText());
     }
 
     @PatchMapping("/{email}")
@@ -71,6 +72,6 @@ public class StudentController {
         }
         Student student = students.get(email);
         student.setRate(rate);
-        return ResponseEntity.ok("Rate changed successfuly");
+        return ResponseEntity.ok(Messages.STUDENT_UPDATE_RATE_SUCCESS.getText());
     }
 }

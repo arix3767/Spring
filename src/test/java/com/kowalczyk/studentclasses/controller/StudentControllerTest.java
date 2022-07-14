@@ -1,0 +1,87 @@
+package com.kowalczyk.studentclasses.controller;
+
+import com.google.gson.Gson;
+import com.kowalczyk.studentclasses.enums.Messages;
+import com.kowalczyk.studentclasses.model.Student;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.HashMap;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+class StudentControllerTest {
+
+    private static final String EMAIL = "janek";
+    private static final String STUDENT_PATH = "/student";
+    private static final String ROOT_JSON_PATH = "$";
+    private static final String STUDENT_JSON_PATH = "$." + EMAIL;
+
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private StudentController studentController;
+    @Autowired
+    private Gson gson;
+
+    @Test
+    void getAllStudentsWhenNoStudentExists() throws Exception {
+        mockMvc.perform(get(STUDENT_PATH))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isMap())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(new HashMap<>()));
+    }
+
+    @Test
+    void getAllStudents() throws Exception {
+        Student student = buildStudent();
+        studentController.addStudent(student);
+        mockMvc.perform(get(STUDENT_PATH))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isMap())
+                .andExpect(jsonPath(STUDENT_JSON_PATH).exists())
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".email").value(EMAIL))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(student.getName()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".teacher").value(student.getTeacher()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(student.getRate()));
+    }
+
+    private Student buildStudent() {
+        return Student.builder()
+                .name("Janek")
+                .email(EMAIL)
+                .teacher("Mati")
+                .rate(5.0f)
+                .build();
+    }
+
+    @Test
+    void addStudent() throws Exception {
+        String json = gson.toJson(buildStudent());
+        mockMvc.perform(post(STUDENT_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_ADD_SUCCESS.getText()));
+    }
+}
