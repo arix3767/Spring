@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +26,7 @@ class StudentControllerTest {
 
     private static final String EMAIL = "janek";
     private static final String STUDENT_PATH = "/student";
+    public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/" + EMAIL;
     private static final String ROOT_JSON_PATH = "$";
     private static final String STUDENT_JSON_PATH = "$." + EMAIL;
 
@@ -84,4 +84,50 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_ADD_SUCCESS.getText()));
     }
+
+    @Test
+    void deleteStudent() throws Exception {
+        studentController.addStudent(buildStudent());
+        mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_DELETE_SUCCESS.getText()));
+    }
+
+    @Test
+    void updateRate() throws Exception {
+        studentController.addStudent(buildStudent());
+        mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(1.0)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_UPDATE_RATE_SUCCESS.getText()));
+    }
+
+    @Test
+    void editStudent() throws Exception {
+        Student.StudentBuilder updatedStudent = Student.builder()
+                .name("Marek")
+                .email("marek123")
+                .teacher("Maciek")
+                .rate(2);
+        String json = gson.toJson(updatedStudent);
+        studentController.addStudent(buildStudent());
+        mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_EDIT_SUCCESS.getText()));
+
+    }
+    //W domu: Zrobić test dla metody edit
+
 }
