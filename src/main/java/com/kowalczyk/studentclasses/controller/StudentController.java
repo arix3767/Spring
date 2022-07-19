@@ -3,30 +3,33 @@ package com.kowalczyk.studentclasses.controller;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
 import com.kowalczyk.studentclasses.model.Student;
+import com.kowalczyk.studentclasses.service.StudentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/student")
 public class StudentController {
 
     private final Map<String, Student> students = new HashMap<>();
 
+    private final StudentService studentService;
+
     @GetMapping
     public ResponseEntity<Map<String, Student>> getAll() {
-        return ResponseEntity.ok(students);
+        Map<String, Student> studentMap = studentService.getAll();
+        return ResponseEntity.ok(studentMap);
     }
 
     @PostMapping
     public ResponseEntity<String> addStudent(@RequestBody Student student) {
-        if (students.containsKey(student.getEmail())) {
-            return ResponseEntity.badRequest().body(Messages.STUDENT_ADD_FAILED.getText());
-        }
-        students.put(student.getEmail(), student);
-        return ResponseEntity.ok(Messages.STUDENT_ADD_SUCCESS.getText());
+        String message = studentService.addStudent(student);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping("/{email}")
