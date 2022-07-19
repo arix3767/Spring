@@ -34,10 +34,8 @@ public class StudentController {
 
     @GetMapping("/{email}")
     public ResponseEntity<Student> findStudent(@PathVariable String email) {
-        if (!students.containsKey(email)) {
-            throw new StudentNotFoundException();
-        }
-        return ResponseEntity.ok(students.get(email));
+        Student student = studentService.findStudent(email);
+        return ResponseEntity.ok(student);
     }
 
     @PutMapping("/{email}")
@@ -46,7 +44,7 @@ public class StudentController {
             throw new StudentNotFoundException();
         }
         if (newStudentData.getEmail() == null) {
-            return ResponseEntity.badRequest().body(Messages.STUDENT_EDIT_FAILED.getText());
+            return ResponseEntity.badRequest().body(Messages.INVALID_EMAIL.getText());
         }
         Student student = students.get(email);
         student.setName(newStudentData.getName());
