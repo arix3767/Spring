@@ -111,11 +111,12 @@ class StudentControllerTest {
 
     @Test
     void editStudent() throws Exception {
-        Student.StudentBuilder updatedStudent = Student.builder()
+        Student updatedStudent = Student.builder()
                 .name("Marek")
                 .email("marek123")
                 .teacher("Maciek")
-                .rate(2);
+                .rate(2)
+                .build();
         String json = gson.toJson(updatedStudent);
         studentController.addStudent(buildStudent());
         mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
@@ -126,8 +127,5 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_EDIT_SUCCESS.getText()));
-
     }
-    //W domu: Zrobić test dla metody edit
-
 }
