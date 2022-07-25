@@ -3,16 +3,18 @@ package com.kowalczyk.studentclasses.controller;
 import com.google.gson.Gson;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.model.Student;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,6 +37,15 @@ class StudentControllerTest {
     private StudentController studentController;
     @Autowired
     private Gson gson;
+
+    @BeforeEach
+    void setup() {
+        Optional.ofNullable(studentController.getAll())
+                .map(HttpEntity::getBody)
+                .filter(students -> students.size() > 0)
+                .map(Map::entrySet)
+                .ifPresent(entries -> entries.removeAll(entries));
+    }
 
     @Test
     void getAllStudentsWhenNoStudentExists() throws Exception {
