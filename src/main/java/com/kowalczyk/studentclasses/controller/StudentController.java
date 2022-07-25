@@ -40,39 +40,19 @@ public class StudentController {
 
     @PutMapping("/{email}")
     public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody Student newStudentData) {
-        if (!students.containsKey(email)) {
-            throw new StudentNotFoundException();
-        }
-        if (newStudentData.getEmail() == null) {
-            return ResponseEntity.badRequest().body(Messages.INVALID_EMAIL.getText());
-        }
-        Student student = students.get(email);
-        student.setName(newStudentData.getName());
-        student.setRate(newStudentData.getRate());
-        student.setTeacher(newStudentData.getTeacher());
-        student.setEmail(newStudentData.getEmail());
-        students.remove(email);
-        students.put(newStudentData.getEmail(),student);
-        return ResponseEntity.ok(Messages.STUDENT_EDIT_SUCCESS.getText());
+      String message = studentService.editStudent(email,newStudentData);
+      return ResponseEntity.ok(message);
     }
 
     @DeleteMapping("/{email}")
     public ResponseEntity<String> deleteStudent(@PathVariable String email) {
-        if (!students.containsKey(email)) {
-            throw new StudentNotFoundException();
-        }
-        Student student = students.get(email);
-        students.remove(email, student);
-        return ResponseEntity.ok(Messages.STUDENT_DELETE_SUCCESS.getText());
+        String message = studentService.deleteStudent(email);
+        return ResponseEntity.ok(message);
     }
 
     @PatchMapping("/{email}")
     public ResponseEntity<String> updateRate(@PathVariable String email, @RequestBody float rate) {
-        if (!students.containsKey(email)) {
-            throw new StudentNotFoundException();
-        }
-        Student student = students.get(email);
-        student.setRate(rate);
-        return ResponseEntity.ok(Messages.STUDENT_UPDATE_RATE_SUCCESS.getText());
+        String message = studentService.updateRate(email,rate);
+        return ResponseEntity.ok(message);
     }
 }

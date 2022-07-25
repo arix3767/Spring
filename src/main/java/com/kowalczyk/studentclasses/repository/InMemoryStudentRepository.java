@@ -13,21 +13,29 @@ public class InMemoryStudentRepository implements StudentRepository{
 
     @Override
     public Map<String, Student> findAll() {
-        return null;
+        return students;
     }
 
     @Override
     public Student save(Student student) {
-        return null;
+        if (students.containsKey(student.getEmail())){
+            students.remove(student.getEmail());
+            student.setEmail(student.getNewEmail());
+            return students.put(student.getNewEmail(),student);
+        }
+        String email = student.getEmail();
+        return students.put(email,student);
     }
 
     @Override
     public Student findByEmail(String email) {
-        return null;
+        return students.get(email);
     }
 
     @Override
     public void delete(Student student) {
+        String email = student.getEmail();
+        students.remove(email,student);
     }
 
     @Override

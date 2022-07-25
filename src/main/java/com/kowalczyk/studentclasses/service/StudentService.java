@@ -47,10 +47,28 @@ public class StudentService {
                 .name(newStudentData.getName())
                 .rate(newStudentData.getRate())
                 .teacher(newStudentData.getTeacher())
-                .email(newStudentData.getEmail())
+                .newEmail(newStudentData.getNewEmail())
                 .build();
         studentRepository.save(student);
         return Messages.STUDENT_EDIT_SUCCESS.getText();
+    }
+    public String deleteStudent(String email) {
+        if (!studentRepository.existsByEmail(email)) {
+            throw new StudentNotFoundException();
+        }
+        Student student = studentRepository.findByEmail(email);
+        studentRepository.delete(student);
+        return Messages.STUDENT_DELETE_SUCCESS.getText();
+    }
+
+    public String updateRate(String email, float rate) {
+        if (!studentRepository.existsByEmail(email)) {
+            throw new StudentNotFoundException();
+        }
+        Student student = studentRepository.findByEmail(email);
+        student.setRate(rate);
+        studentRepository.save(student);
+        return Messages.STUDENT_UPDATE_RATE_SUCCESS.getText();
     }
 
 }
