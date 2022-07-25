@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,7 +45,7 @@ class StudentControllerTest {
                 .map(HttpEntity::getBody)
                 .filter(students -> students.size() > 0)
                 .map(Map::entrySet)
-                .ifPresent(entries -> entries.removeAll(entries));
+                .ifPresent(entries -> entries.removeAll(Set.copyOf(entries)));
     }
 
     @Test
