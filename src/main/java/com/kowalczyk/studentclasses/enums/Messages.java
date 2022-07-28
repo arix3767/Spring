@@ -12,7 +12,8 @@ public enum Messages {
     INVALID_EMAIL("invalid email"),
     STUDENT_DELETE_SUCCESS("Student removed successfully"),
     STUDENT_UPDATE_RATE_SUCCESS("Rate changed successfully"),
-    STUDENT_NOT_FOUND("Student not found!");
+    STUDENT_NOT_FOUND("Student not found!"),
+    INTERNAL_SERVER_ERROR("Internal server error");
 
 
     private final String text;
