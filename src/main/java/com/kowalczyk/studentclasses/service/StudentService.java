@@ -1,5 +1,8 @@
 package com.kowalczyk.studentclasses.service;
 
+import com.kowalczyk.studentclasses.converters.StudentDtoToStudentConverter;
+import com.kowalczyk.studentclasses.converters.StudentToStudentDtoConverter;
+import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
@@ -10,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -17,15 +21,16 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public Map<String, Student> getAll() {
-        return studentRepository.findAll();
+    public Map<String, StudentDto> getAll() {
+        return studentRepository.findAll().values().stream()
+                .collect(Collectors.toMap(Student::getEmail, StudentToStudentDtoConverter.INSTANCE::convert));
     }
 
-    public String addStudent(Student student) {
+    public String addStudent(StudentDto student) {
         if (studentRepository.existsByEmail(student.getEmail())) {
             throw new StudentAlreadyExistsException();
         }
-        studentRepository.save(student);
+        studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(student));
         return Messages.STUDENT_ADD_SUCCESS.getText();
     }
 

@@ -1,6 +1,7 @@
 package com.kowalczyk.studentclasses.controller;
 
 import com.google.gson.Gson;
+import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
 import com.kowalczyk.studentclasses.model.Student;
@@ -47,8 +48,11 @@ class StudentControllerTest {
         Optional.ofNullable(studentController.getAll())
                 .map(HttpEntity::getBody)
                 .filter(students -> students.size() > 0)
-                .map(Map::entrySet)
-                .ifPresent(entries -> entries.removeAll(Set.copyOf(entries)));
+                .map(Map::values)
+                .map(values -> values.stream()
+                        .map(StudentDto::getEmail)
+                        .toList())
+                .ifPresent(emails -> emails.forEach(studentController::deleteStudent));
     }
 
     @Test
@@ -63,7 +67,7 @@ class StudentControllerTest {
 
     @Test
     void getAllStudents() throws Exception {
-        Student student = buildStudent();
+        StudentDto student = buildStudent();
         studentController.addStudent(student);
         mockMvc.perform(get(STUDENT_PATH))
                 .andDo(print())
@@ -77,8 +81,8 @@ class StudentControllerTest {
                 .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(student.getRate()));
     }
 
-    private Student buildStudent() {
-        return Student.builder()
+    private StudentDto buildStudent() {
+        return StudentDto.builder()
                 .name("Janek")
                 .email(EMAIL)
                 .teacher("Mati")
@@ -101,7 +105,7 @@ class StudentControllerTest {
 
     @Test
     void shouldNotAddStudentWhenStudentAlreadyExists() throws Exception {
-        Student student = buildStudent();
+        StudentDto student = buildStudent();
         studentController.addStudent(student);
         String json = gson.toJson(student);
         mockMvc.perform(post(STUDENT_PATH)
@@ -150,7 +154,7 @@ class StudentControllerTest {
 
     @Test
     void editStudent() throws Exception {
-        Student updatedStudent = Student.builder()
+        StudentDto updatedStudent = StudentDto.builder()
                 .name("Marek")
                 .email("marek123")
                 .teacher("Maciek")
