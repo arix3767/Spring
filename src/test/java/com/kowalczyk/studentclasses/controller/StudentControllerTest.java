@@ -100,6 +100,21 @@ class StudentControllerTest {
     }
 
     @Test
+    void shouldNotAddStudentWhenStudentAlreadyExists() throws Exception {
+        Student student = buildStudent();
+        studentController.addStudent(student);
+        String json = gson.toJson(student);
+        mockMvc.perform(post(STUDENT_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_ADD_FAILED.getText()));
+    }
+
+    @Test
     void deleteStudent() throws Exception {
         studentController.addStudent(buildStudent());
         mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
@@ -108,6 +123,16 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_DELETE_SUCCESS.getText()));
+    }
+
+    @Test
+    void shouldNotDeleteStudentWhenStudentNotExists() throws Exception {
+        mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
     }
 
     @Test
@@ -141,31 +166,5 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_EDIT_SUCCESS.getText()));
-    }
-
-    @Test
-    void editStudent_studentNotFound() throws Exception {
-        Student updatedStudent = Student.builder()
-                .name("Marek")
-                .email("marek123")
-                .teacher("Maciek")
-                .rate(2)
-                .build();
-
-        Mockito.when(studentController.findStudent(updatedStudent.getEmail())).thenReturn(null);
-
-        String json = gson.toJson(updatedStudent);
-        studentController.addStudent(buildStudent());
-        mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(result ->
-                        assertTrue(result.getResolvedException() instanceof StudentNotFoundException))
-                .andExpect(result ->
-                        assertEquals("Student not found!", result.getResolvedException().getMessage()));
-
-
     }
 }
