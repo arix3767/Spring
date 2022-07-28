@@ -1,7 +1,5 @@
 package com.kowalczyk.studentclasses.controller;
 
-import com.kowalczyk.studentclasses.enums.Messages;
-import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
 import com.kowalczyk.studentclasses.model.Student;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;

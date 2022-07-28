@@ -2,9 +2,13 @@ package com.kowalczyk.studentclasses.controller;
 
 import com.google.gson.Gson;
 import com.kowalczyk.studentclasses.enums.Messages;
+import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
 import com.kowalczyk.studentclasses.model.Student;
+import com.kowalczyk.studentclasses.repository.InMemoryStudentRepository;
+import com.kowalczyk.studentclasses.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,11 +16,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -138,5 +141,31 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_EDIT_SUCCESS.getText()));
+    }
+
+    @Test
+    void editStudent_studentNotFound() throws Exception {
+        Student updatedStudent = Student.builder()
+                .name("Marek")
+                .email("marek123")
+                .teacher("Maciek")
+                .rate(2)
+                .build();
+
+        Mockito.when(studentController.findStudent(updatedStudent.getEmail())).thenReturn(null);
+
+        String json = gson.toJson(updatedStudent);
+        studentController.addStudent(buildStudent());
+        mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof StudentNotFoundException))
+                .andExpect(result ->
+                        assertEquals("Student not found!", result.getResolvedException().getMessage()));
+
+
     }
 }
