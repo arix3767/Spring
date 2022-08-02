@@ -34,35 +34,36 @@ public class StudentService {
         return Messages.STUDENT_ADD_SUCCESS.getText();
     }
 
-    public Student findStudent(String email) {
+    public StudentDto findStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();
         }
-        return studentRepository.findByEmail(email);
+        return StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
     }
 
-    public String editStudent(String email, Student newStudentData) {
+    public String editStudent(String email, StudentDto newStudentData) {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();
         }
         if (newStudentData.getEmail() == null) {
             throw new InvalidEmailException();
         }
-        Student student = studentRepository.findByEmail(email).toBuilder()
-                .name(newStudentData.getName())
-                .rate(newStudentData.getRate())
-                .teacher(newStudentData.getTeacher())
-                .newEmail(newStudentData.getNewEmail())
-                .build();
-        studentRepository.save(student);
+      StudentDto studentDto = StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email).toBuilder()
+              .name(newStudentData.getName())
+              .rate(newStudentData.getRate())
+              .teacher(newStudentData.getTeacher())
+              .newEmail(newStudentData.getEmail())
+              .build());
+
+        studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
         return Messages.STUDENT_EDIT_SUCCESS.getText();
     }
     public String deleteStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();
         }
-        Student student = studentRepository.findByEmail(email);
-        studentRepository.delete(student);
+        StudentDto studentDto = StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
+        studentRepository.delete(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
         return Messages.STUDENT_DELETE_SUCCESS.getText();
     }
 
@@ -70,9 +71,9 @@ public class StudentService {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();
         }
-        Student student = studentRepository.findByEmail(email);
-        student.setRate(rate);
-        studentRepository.save(student);
+        StudentDto studentDto = StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
+        studentDto.setRate(rate);
+        studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
         return Messages.STUDENT_UPDATE_RATE_SUCCESS.getText();
     }
 

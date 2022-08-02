@@ -30,13 +30,13 @@ public class StudentController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<Student> findStudent(@PathVariable String email) {
-        Student student = studentService.findStudent(email);
-        return ResponseEntity.ok(student);
+    public ResponseEntity<StudentDto> findStudent(@PathVariable String email) {
+        StudentDto studentDto = studentService.findStudent(email);
+        return ResponseEntity.ok(studentDto);
     }
 
     @PutMapping("/{email}")
-    public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody Student newStudentData) {
+    public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody StudentDto newStudentData) {
       String message = studentService.editStudent(email,newStudentData);
       return ResponseEntity.ok(message);
     }

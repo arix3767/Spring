@@ -151,6 +151,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_UPDATE_RATE_SUCCESS.getText()));
     }
+
     @Test
     void shouldNotUpdateRateWhenStudentNotExists() throws Exception {
         mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
@@ -162,6 +163,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
     }
+
     @Test
     void editStudent() throws Exception {
         StudentDto updatedStudent = StudentDto.builder()
@@ -181,6 +183,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_EDIT_SUCCESS.getText()));
     }
+
     @Test
     void shouldNotEditStudentWhenStudentNotExists() throws Exception {
         StudentDto updatedStudent = StudentDto.builder()
@@ -199,6 +202,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
     }
+
     @Test
     void shouldNotEditStudentWhenNewEmailIsNull() throws Exception {
         StudentDto updatedStudent = StudentDto.builder()
@@ -222,17 +226,22 @@ class StudentControllerTest {
 
     @Test
     void getByEmail() throws Exception {
-        StudentDto student = buildStudent();
-        studentController.addStudent(student);
+        StudentDto studentDto = buildStudent();
+        studentController.addStudent(studentDto);
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
-                .andExpect(jsonPath(STUDENT_JSON_PATH).exists())
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".email").value(EMAIL))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(student.getName()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".teacher").value(student.getTeacher()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(student.getRate()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).exists())
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".email").value(EMAIL))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".name").value(studentDto.getName()))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".teacher").value(studentDto.getTeacher()))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".rate").value(studentDto.getRate()));
+
+    }
+
+    @Test
+    void shouldNotGetByEmailWhenStudentNotExists() throws Exception {
 
     }
 }
