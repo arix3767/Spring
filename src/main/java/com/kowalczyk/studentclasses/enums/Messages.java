@@ -13,6 +13,7 @@ public enum Messages {
     STUDENT_DELETE_SUCCESS("Student removed successfully"),
     STUDENT_UPDATE_RATE_SUCCESS("Rate changed successfully"),
     STUDENT_NOT_FOUND("Student not found!"),
+    STUDENT_FOUND_SUCCESS("Student found!"),
     INTERNAL_SERVER_ERROR("Internal server error");
 
 
