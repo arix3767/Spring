@@ -58,6 +58,7 @@ public class StudentService {
         studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
         return Messages.STUDENT_EDIT_SUCCESS.getText();
     }
+
     public String deleteStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();

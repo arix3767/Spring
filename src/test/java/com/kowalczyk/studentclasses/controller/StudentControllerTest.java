@@ -242,6 +242,11 @@ class StudentControllerTest {
 
     @Test
     void shouldNotGetByEmailWhenStudentNotExists() throws Exception {
+        StudentDto studentDto = buildStudent();
+        mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
 
     }
 }
