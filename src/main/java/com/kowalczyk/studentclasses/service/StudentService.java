@@ -63,8 +63,8 @@ public class StudentService {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();
         }
-        StudentDto studentDto = StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
-        studentRepository.delete(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
+        Student student = studentRepository.findByEmail(email);
+        studentRepository.delete(student);
         return Messages.STUDENT_DELETE_SUCCESS.getText();
     }
 
