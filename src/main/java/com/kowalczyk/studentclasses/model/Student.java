@@ -1,7 +1,9 @@
 package com.kowalczyk.studentclasses.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
 @Getter
 @Setter
 @Builder(toBuilder = true)
@@ -9,7 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 public class Student {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
+    @Column(unique = true, nullable = false)
     private String email;
     private String newEmail;
     private String teacher;

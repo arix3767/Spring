@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,14 +41,18 @@ class StudentServiceTest {
     @DisplayName("Verify if get all works correctly")
     void getAll() {
         // given
-        Map<String, Student> expectedStudents = Collections.singletonMap(EMAIL, buildStudent());
+        List<Student> expectedStudents = Collections.singletonList(buildStudent());
         Mockito.when(studentRepository.findAll()).thenReturn(expectedStudents);
         // when
         Map<String, StudentDto> students = studentService.getAll();
         // then
         assertEquals(expectedStudents.size(), students.size());
         students.forEach((email, studentDto) -> {
-            Student expectedStudentDto = expectedStudents.get(email);
+            Student expectedStudentDto = expectedStudents.stream()
+                    .filter(student -> email.equals(student.getEmail()))
+                    .findFirst()
+                    .orElse(null);
+            assertNotNull(expectedStudentDto);
             assertEquals(expectedStudentDto.getEmail(), studentDto.getEmail());
             assertEquals(expectedStudentDto.getName(), studentDto.getName());
             assertEquals(expectedStudentDto.getTeacher(), studentDto.getTeacher());

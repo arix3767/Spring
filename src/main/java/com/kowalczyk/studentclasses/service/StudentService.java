@@ -22,7 +22,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     public Map<String, StudentDto> getAll() {
-        return studentRepository.findAll().values().stream()
+        return studentRepository.findAll().stream()
                 .collect(Collectors.toMap(Student::getEmail, StudentToStudentDtoConverter.INSTANCE::convert));
     }
 
