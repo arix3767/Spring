@@ -1,14 +1,12 @@
 package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.dto.StudentDto;
-import com.kowalczyk.studentclasses.model.Student;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,10 +15,16 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<StudentDto>> findAllLessThan(@RequestParam float rate) {
+        List<StudentDto> students = studentService.findAllLessThan(rate);
+        return ResponseEntity.ok(students);
+    }
+
     @GetMapping
-    public ResponseEntity<Map<String, StudentDto>> getAll() {
-        Map<String, StudentDto> studentMap = studentService.getAll();
-        return ResponseEntity.ok(studentMap);
+    public ResponseEntity<List<StudentDto>> getAll() {
+        List<StudentDto> students = studentService.getAll();
+        return ResponseEntity.ok(students);
     }
 
     @PostMapping

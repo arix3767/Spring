@@ -43,8 +43,7 @@ class StudentControllerTest {
         Optional.ofNullable(studentController.getAll())
                 .map(HttpEntity::getBody)
                 .filter(students -> students.size() > 0)
-                .map(Map::values)
-                .map(values -> values.stream()
+                .map(studentDtoList -> studentDtoList.stream()
                         .map(StudentDto::getEmail)
                         .toList())
                 .ifPresent(emails -> emails.forEach(studentController::deleteStudent));

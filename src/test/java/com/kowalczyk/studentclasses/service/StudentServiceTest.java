@@ -44,10 +44,11 @@ class StudentServiceTest {
         List<Student> expectedStudents = Collections.singletonList(buildStudent());
         Mockito.when(studentRepository.findAll()).thenReturn(expectedStudents);
         // when
-        Map<String, StudentDto> students = studentService.getAll();
+        List<StudentDto> students = studentService.getAll();
         // then
         assertEquals(expectedStudents.size(), students.size());
-        students.forEach((email, studentDto) -> {
+        students.forEach(studentDto -> {
+            String email = studentDto.getEmail();
             Student expectedStudentDto = expectedStudents.stream()
                     .filter(student -> email.equals(student.getEmail()))
                     .findFirst()

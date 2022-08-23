@@ -12,8 +12,7 @@ import com.kowalczyk.studentclasses.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -21,9 +20,10 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public Map<String, StudentDto> getAll() {
+    public List<StudentDto> getAll() {
         return studentRepository.findAll().stream()
-                .collect(Collectors.toMap(Student::getEmail, StudentToStudentDtoConverter.INSTANCE::convert));
+                .map(StudentToStudentDtoConverter.INSTANCE::convert)
+                .toList();
     }
 
     public String addStudent(StudentDto student) {
@@ -78,4 +78,9 @@ public class StudentService {
         return Messages.STUDENT_UPDATE_RATE_SUCCESS.getText();
     }
 
+    public List<StudentDto> findAllLessThan(float rate) {
+        return studentRepository.findAllByRateLessThan(rate).stream()
+                .map(StudentToStudentDtoConverter.INSTANCE::convert)
+                .toList();
+    }
 }
