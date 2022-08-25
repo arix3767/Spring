@@ -18,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,7 +55,7 @@ class StudentServiceTest {
             assertNotNull(expectedStudentDto);
             assertEquals(expectedStudentDto.getEmail(), studentDto.getEmail());
             assertEquals(expectedStudentDto.getName(), studentDto.getName());
-            assertEquals(expectedStudentDto.getTeacher(), studentDto.getTeacher());
+            assertEquals(expectedStudentDto.getTeacherName(), studentDto.getTeacher());
             assertEquals(expectedStudentDto.getRate(), studentDto.getRate());
         });
     }
@@ -205,7 +204,7 @@ class StudentServiceTest {
         return Student.builder()
                 .name("Janek")
                 .email(EMAIL)
-                .teacher("Mati")
+                .teacherName("Mati")
                 .rate(5.0f)
                 .build();
     }

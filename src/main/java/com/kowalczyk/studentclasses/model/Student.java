@@ -2,21 +2,17 @@ package com.kowalczyk.studentclasses.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
+public class Student extends UserData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
     private String name;
-    @Column(unique = true, nullable = false)
-    private String email;
-    private String teacher;
+    private String teacherName;
     private float rate;
 }

@@ -51,7 +51,7 @@ public class StudentService {
         Student student = studentRepository.findByEmail(email).toBuilder()
                 .name(newStudentData.getName())
                 .rate(newStudentData.getRate())
-                .teacher(newStudentData.getTeacher())
+                .teacherName(newStudentData.getTeacher())
                 .build();
 
         studentRepository.save(student);
