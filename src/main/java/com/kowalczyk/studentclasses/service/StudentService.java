@@ -52,7 +52,6 @@ public class StudentService {
                 .name(newStudentData.getName())
                 .rate(newStudentData.getRate())
                 .teacher(newStudentData.getTeacher())
-                .newEmail(newStudentData.getEmail())
                 .build();
 
         studentRepository.save(student);

@@ -11,7 +11,6 @@ public enum StudentToStudentDtoConverter implements Converter<Student, StudentDt
     public StudentDto convert(Student student) {
         return StudentDto.builder()
                 .email(student.getEmail())
-                .newEmail(student.getNewEmail())
                 .name(student.getName())
                 .teacher(student.getTeacher())
                 .rate(student.getRate())

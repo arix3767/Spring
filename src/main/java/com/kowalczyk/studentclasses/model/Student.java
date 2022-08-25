@@ -17,7 +17,6 @@ public class Student {
     private String name;
     @Column(unique = true, nullable = false)
     private String email;
-    private String newEmail;
     private String teacher;
     private float rate;
 }
