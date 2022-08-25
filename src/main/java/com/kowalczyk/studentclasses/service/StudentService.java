@@ -48,14 +48,14 @@ public class StudentService {
         if (newStudentData.getEmail() == null) {
             throw new InvalidEmailException();
         }
-      StudentDto studentDto = StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email).toBuilder()
-              .name(newStudentData.getName())
-              .rate(newStudentData.getRate())
-              .teacher(newStudentData.getTeacher())
-              .newEmail(newStudentData.getEmail())
-              .build());
+        Student student = studentRepository.findByEmail(email).toBuilder()
+                .name(newStudentData.getName())
+                .rate(newStudentData.getRate())
+                .teacher(newStudentData.getTeacher())
+                .newEmail(newStudentData.getEmail())
+                .build();
 
-        studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
+        studentRepository.save(student);
         return Messages.STUDENT_EDIT_SUCCESS.getText();
     }
 
@@ -72,14 +72,38 @@ public class StudentService {
         if (!studentRepository.existsByEmail(email)) {
             throw new StudentNotFoundException();
         }
-        StudentDto studentDto = StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
-        studentDto.setRate(rate);
-        studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(studentDto));
+        Student student = studentRepository.findByEmail(email);
+        student.setRate(rate);
+        studentRepository.save(student);
         return Messages.STUDENT_UPDATE_RATE_SUCCESS.getText();
     }
 
     public List<StudentDto> findAllLessThan(float rate) {
         return studentRepository.findAllByRateLessThan(rate).stream()
+                .map(StudentToStudentDtoConverter.INSTANCE::convert)
+                .toList();
+    }
+
+    public List<StudentDto> findAllByRateGreaterThan(float rate) {
+        return studentRepository.findAllByRateGreaterThan(rate).stream()
+                .map(StudentToStudentDtoConverter.INSTANCE::convert)
+                .toList();
+    }
+
+    public List<StudentDto> findAllByRateBetween(float lowLevel, float highLevel) {
+        return studentRepository.findAllByRateBetween(lowLevel, highLevel).stream()
+                .map(StudentToStudentDtoConverter.INSTANCE::convert)
+                .toList();
+    }
+
+    public List<StudentDto> findAllByRateGreaterThanEqual(float rate) {
+        return studentRepository.findAllByRateGreaterThanEqual(rate).stream()
+                .map(StudentToStudentDtoConverter.INSTANCE::convert)
+                .toList();
+    }
+
+    public List<StudentDto> findAllByRateLessThanEqual(float rate) {
+        return studentRepository.findAllByRateLessThanEqual(rate).stream()
                 .map(StudentToStudentDtoConverter.INSTANCE::convert)
                 .toList();
     }

@@ -29,7 +29,7 @@ class StudentControllerTest {
     private static final String STUDENT_PATH = "/student";
     public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/" + EMAIL;
     private static final String ROOT_JSON_PATH = "$";
-    private static final String STUDENT_JSON_PATH = "$." + EMAIL;
+    private static final String STUDENT_JSON_PATH = "$[0]";
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,8 +55,7 @@ class StudentControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isEmpty())
-                .andExpect(jsonPath(ROOT_JSON_PATH).isMap())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(new HashMap<>()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(new ArrayList<>()));
     }
 
     @Test
@@ -67,7 +66,6 @@ class StudentControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
-                .andExpect(jsonPath(ROOT_JSON_PATH).isMap())
                 .andExpect(jsonPath(STUDENT_JSON_PATH).exists())
                 .andExpect(jsonPath(STUDENT_JSON_PATH + ".email").value(EMAIL))
                 .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(student.getName()))

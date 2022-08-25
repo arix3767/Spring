@@ -15,12 +15,6 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @GetMapping("/filter")
-    public ResponseEntity<List<StudentDto>> findAllLessThan(@RequestParam float rate) {
-        List<StudentDto> students = studentService.findAllLessThan(rate);
-        return ResponseEntity.ok(students);
-    }
-
     @GetMapping
     public ResponseEntity<List<StudentDto>> getAll() {
         List<StudentDto> students = studentService.getAll();
@@ -41,8 +35,8 @@ public class StudentController {
 
     @PutMapping("/{email}")
     public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody StudentDto newStudentData) {
-      String message = studentService.editStudent(email,newStudentData);
-      return ResponseEntity.ok(message);
+        String message = studentService.editStudent(email, newStudentData);
+        return ResponseEntity.ok(message);
     }
 
     @DeleteMapping("/{email}")
@@ -53,7 +47,7 @@ public class StudentController {
 
     @PatchMapping("/{email}")
     public ResponseEntity<String> updateRate(@PathVariable String email, @RequestBody float rate) {
-        String message = studentService.updateRate(email,rate);
+        String message = studentService.updateRate(email, rate);
         return ResponseEntity.ok(message);
     }
 }
