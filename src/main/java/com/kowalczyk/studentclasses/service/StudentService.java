@@ -26,11 +26,12 @@ public class StudentService {
                 .toList();
     }
 
-    public String addStudent(StudentDto student) {
-        if (studentRepository.existsByEmail(student.getEmail())) {
+    public String addStudent(StudentDto studentDto) {
+        if (studentRepository.existsByEmail(studentDto.getEmail())) {
             throw new StudentAlreadyExistsException();
         }
-        studentRepository.save(StudentDtoToStudentConverter.INSTANCE.convert(student));
+        Student student = StudentDtoToStudentConverter.INSTANCE.convert(studentDto);
+        studentRepository.save(student);
         return Messages.STUDENT_ADD_SUCCESS.getText();
     }
 

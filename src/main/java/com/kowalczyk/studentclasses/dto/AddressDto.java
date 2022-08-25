@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDto {
-
-    private String name;
-    private String email;
-    private String newEmail;
-    private String teacher;
-    private float rate;
-    private AddressDto address;
+public class AddressDto {
+    private String city;
+    private int postalCode;
+    private String street;
+    private int homeNumber;
+    private int flatNumber;
 }

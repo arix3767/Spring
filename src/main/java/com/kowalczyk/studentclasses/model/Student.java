@@ -15,4 +15,6 @@ public class Student extends UserData {
     private String name;
     private String teacherName;
     private float rate;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
 }
