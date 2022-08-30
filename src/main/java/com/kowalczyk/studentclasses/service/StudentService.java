@@ -1,7 +1,7 @@
 package com.kowalczyk.studentclasses.service;
 
-import com.kowalczyk.studentclasses.converters.StudentDtoToStudentConverter;
-import com.kowalczyk.studentclasses.converters.StudentToStudentDtoConverter;
+import com.kowalczyk.studentclasses.converters.StudentConverters.StudentDtoToStudentConverter;
+import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStudentDtoConverter;
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;

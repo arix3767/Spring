@@ -1,5 +1,7 @@
 package com.kowalczyk.studentclasses.controller;
 
+import com.kowalczyk.studentclasses.converters.TeacherConverters.TeacherDtoToTeacherConverter;
+import com.kowalczyk.studentclasses.dto.TeacherDto;
 import com.kowalczyk.studentclasses.model.Teacher;
 import com.kowalczyk.studentclasses.service.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +18,13 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @GetMapping
-    public ResponseEntity<List<Teacher>> getAll() {
+    public ResponseEntity<List<TeacherDto>> getAll() {
         return ResponseEntity.ok(teacherService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<String> addTeacher(@RequestBody Teacher teacher) {
-        teacherService.addTeacher(teacher);
+    public ResponseEntity<String> addTeacher(@RequestBody TeacherDto teacherDto) {
+        teacherService.addTeacher(teacherDto);
         return ResponseEntity.ok("Teacher added");
     }
 }

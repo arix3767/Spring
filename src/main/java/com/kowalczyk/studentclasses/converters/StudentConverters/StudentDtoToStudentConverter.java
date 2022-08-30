@@ -1,5 +1,6 @@
-package com.kowalczyk.studentclasses.converters;
+package com.kowalczyk.studentclasses.converters.StudentConverters;
 
+import com.kowalczyk.studentclasses.converters.Converter;
 import com.kowalczyk.studentclasses.dto.AddressDto;
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.model.Address;
