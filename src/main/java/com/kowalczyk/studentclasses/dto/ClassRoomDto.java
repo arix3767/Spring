@@ -13,7 +13,7 @@ public class ClassRoomDto {
 
     private Long id;
     private int classNumber;
-    private int schoolNumber;
+    private SchoolDto schoolDto;
     private TeacherDto teacherDto;
 
 }

@@ -3,22 +3,20 @@ package com.kowalczyk.studentclasses.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassRoom {
+public class Voucher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int classNumber;
+    private BigDecimal price;
     @ManyToOne
-    @JoinColumn(name = "school_id")
-    private School school;
-    @OneToOne
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
+    private Student student;
 }
