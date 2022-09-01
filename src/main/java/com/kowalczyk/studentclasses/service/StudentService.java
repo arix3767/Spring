@@ -6,7 +6,7 @@ import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
-import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
+import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +37,14 @@ public class StudentService {
 
     public StudentDto findStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
-            throw new StudentNotFoundException();
+            throw new UserNotFoundException();
         }
         return StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
     }
 
     public String editStudent(String email, StudentDto newStudentData) {
         if (!studentRepository.existsByEmail(email)) {
-            throw new StudentNotFoundException();
+            throw new UserNotFoundException();
         }
         if (newStudentData.getEmail() == null) {
             throw new InvalidEmailException();
@@ -61,7 +61,7 @@ public class StudentService {
 
     public String deleteStudent(String email) {
         if (!studentRepository.existsByEmail(email)) {
-            throw new StudentNotFoundException();
+            throw new UserNotFoundException();
         }
         Student student = studentRepository.findByEmail(email);
         studentRepository.delete(student);
@@ -70,7 +70,7 @@ public class StudentService {
 
     public String updateRate(String email, float rate) {
         if (!studentRepository.existsByEmail(email)) {
-            throw new StudentNotFoundException();
+            throw new UserNotFoundException();
         }
         Student student = studentRepository.findByEmail(email);
         student.setRate(rate);
