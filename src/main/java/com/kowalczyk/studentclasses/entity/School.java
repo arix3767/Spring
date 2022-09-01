@@ -1,4 +1,4 @@
-package com.kowalczyk.studentclasses.model;
+package com.kowalczyk.studentclasses.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

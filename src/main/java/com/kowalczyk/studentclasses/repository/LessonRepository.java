@@ -1,6 +1,6 @@
 package com.kowalczyk.studentclasses.repository;
 
-import com.kowalczyk.studentclasses.model.Lesson;
+import com.kowalczyk.studentclasses.entity.Lesson;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

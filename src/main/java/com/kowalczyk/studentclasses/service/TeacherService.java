@@ -3,7 +3,7 @@ package com.kowalczyk.studentclasses.service;
 import com.kowalczyk.studentclasses.converters.TeacherConverters.TeacherDtoToTeacherConverter;
 import com.kowalczyk.studentclasses.converters.TeacherConverters.TeacherToTeacherDtoConverter;
 import com.kowalczyk.studentclasses.dto.TeacherDto;
-import com.kowalczyk.studentclasses.model.Teacher;
+import com.kowalczyk.studentclasses.entity.Teacher;
 import com.kowalczyk.studentclasses.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

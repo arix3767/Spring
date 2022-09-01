@@ -2,7 +2,7 @@ package com.kowalczyk.studentclasses.converters.TeacherConverters;
 
 import com.kowalczyk.studentclasses.converters.Converter;
 import com.kowalczyk.studentclasses.dto.TeacherDto;
-import com.kowalczyk.studentclasses.model.Teacher;
+import com.kowalczyk.studentclasses.entity.Teacher;
 
 public enum TeacherToTeacherDtoConverter implements Converter<Teacher, TeacherDto> {
 

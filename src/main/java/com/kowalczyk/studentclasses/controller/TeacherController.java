@@ -1,8 +1,6 @@
 package com.kowalczyk.studentclasses.controller;
 
-import com.kowalczyk.studentclasses.converters.TeacherConverters.TeacherDtoToTeacherConverter;
 import com.kowalczyk.studentclasses.dto.TeacherDto;
-import com.kowalczyk.studentclasses.model.Teacher;
 import com.kowalczyk.studentclasses.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

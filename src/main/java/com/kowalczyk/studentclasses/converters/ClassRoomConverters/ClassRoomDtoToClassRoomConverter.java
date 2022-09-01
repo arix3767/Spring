@@ -5,10 +5,10 @@ import com.kowalczyk.studentclasses.dto.AddressDto;
 import com.kowalczyk.studentclasses.dto.ClassRoomDto;
 import com.kowalczyk.studentclasses.dto.SchoolDto;
 import com.kowalczyk.studentclasses.dto.TeacherDto;
-import com.kowalczyk.studentclasses.model.Address;
-import com.kowalczyk.studentclasses.model.ClassRoom;
-import com.kowalczyk.studentclasses.model.School;
-import com.kowalczyk.studentclasses.model.Teacher;
+import com.kowalczyk.studentclasses.entity.Address;
+import com.kowalczyk.studentclasses.entity.ClassRoom;
+import com.kowalczyk.studentclasses.entity.School;
+import com.kowalczyk.studentclasses.entity.Teacher;
 
 public enum ClassRoomDtoToClassRoomConverter implements Converter<ClassRoomDto, ClassRoom> {
     INSTANCE;

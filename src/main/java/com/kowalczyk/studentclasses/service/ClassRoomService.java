@@ -1,8 +1,7 @@
 package com.kowalczyk.studentclasses.service;
 
 
-import com.kowalczyk.studentclasses.dto.ClassRoomDto;
-import com.kowalczyk.studentclasses.model.ClassRoom;
+import com.kowalczyk.studentclasses.entity.ClassRoom;
 import com.kowalczyk.studentclasses.repository.ClassRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

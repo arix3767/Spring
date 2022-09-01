@@ -1,6 +1,7 @@
-package com.kowalczyk.studentclasses.model;
+package com.kowalczyk.studentclasses.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lesson extends Classes {
-
-    private int schoolNumber;
-
+public class Teacher extends UserData {
+    private String name;
+    @OneToOne(mappedBy = "teacher")
+    private ClassRoom classRoom;
 }

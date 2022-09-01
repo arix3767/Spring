@@ -2,7 +2,7 @@ package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.converters.ClassRoomConverters.ClassRoomDtoToClassRoomConverter;
 import com.kowalczyk.studentclasses.dto.ClassRoomDto;
-import com.kowalczyk.studentclasses.model.ClassRoom;
+import com.kowalczyk.studentclasses.entity.ClassRoom;
 import com.kowalczyk.studentclasses.service.ClassRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
