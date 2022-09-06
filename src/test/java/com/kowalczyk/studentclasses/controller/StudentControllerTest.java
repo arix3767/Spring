@@ -128,7 +128,7 @@ class StudentControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
     }
 
     @Test
@@ -153,7 +153,7 @@ class StudentControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
     }
 
     @Test
@@ -192,7 +192,7 @@ class StudentControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
     }
 
     @Test
@@ -238,7 +238,7 @@ class StudentControllerTest {
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_NOT_FOUND.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
 
     }
 }

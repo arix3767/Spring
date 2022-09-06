@@ -6,7 +6,7 @@ import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
-import com.kowalczyk.studentclasses.exception.StudentNotFoundException;
+import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,7 +113,7 @@ class StudentServiceTest {
 //        given
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
 //        when
-        assertThrows(StudentNotFoundException.class, () -> studentService.editStudent(null, buildStudentDto()));
+        assertThrows(UserNotFoundException.class, () -> studentService.editStudent(null, buildStudentDto()));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
     }
@@ -147,7 +147,7 @@ class StudentServiceTest {
 //        give
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
 //        when
-        assertThrows(StudentNotFoundException.class, () -> studentService.findStudent(EMAIL));
+        assertThrows(UserNotFoundException.class, () -> studentService.findStudent(EMAIL));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).findByEmail(EMAIL);
     }
@@ -170,7 +170,7 @@ class StudentServiceTest {
 //        given
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
 //        when
-        assertThrows(StudentNotFoundException.class, () -> studentService.deleteStudent(EMAIL));
+        assertThrows(UserNotFoundException.class, () -> studentService.deleteStudent(EMAIL));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).delete(Mockito.any(Student.class));
     }
@@ -195,7 +195,7 @@ class StudentServiceTest {
 //        given
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
 //        when
-        assertThrows(StudentNotFoundException.class, () -> studentService.updateRate(EMAIL, 4));
+        assertThrows(UserNotFoundException.class, () -> studentService.updateRate(EMAIL, 4));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
     }
