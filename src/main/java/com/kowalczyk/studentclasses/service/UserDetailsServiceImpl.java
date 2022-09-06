@@ -9,9 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 @RequiredArgsConstructor
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -26,6 +28,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return User.builder()
                 .username(userData.getEmail())
                 .password(userData.getPassword())
+                .authorities(Collections.emptyList())
                 .build();
     }
 }
