@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,12 +29,14 @@ class StudentServiceTest {
 
     @MockBean
     private StudentRepository studentRepository;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
     private StudentService studentService;
 
     @BeforeEach
     void setup() {
-        studentService = new StudentService(studentRepository);
+        studentService = new StudentService(studentRepository, passwordEncoder);
     }
 
     @Test

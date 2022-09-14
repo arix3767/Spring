@@ -10,6 +10,7 @@ import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<StudentDto> getAll() {
         return studentRepository.findAll().stream()
@@ -31,8 +33,14 @@ public class StudentService {
             throw new StudentAlreadyExistsException();
         }
         Student student = StudentDtoToStudentConverter.INSTANCE.convert(studentDto);
+        encodePassword(student);
         studentRepository.save(student);
         return Messages.STUDENT_ADD_SUCCESS.getText();
+    }
+
+    private void encodePassword(Student student) {
+        String encodedPassword = passwordEncoder.encode(student.getPassword());
+        student.setPassword(encodedPassword);
     }
 
     public StudentDto findStudent(String email) {
@@ -54,7 +62,7 @@ public class StudentService {
                 .rate(newStudentData.getRate())
                 .teacherName(newStudentData.getTeacher())
                 .build();
-
+        encodePassword(student);
         studentRepository.save(student);
         return Messages.STUDENT_EDIT_SUCCESS.getText();
     }
