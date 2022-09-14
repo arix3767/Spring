@@ -1,5 +1,8 @@
 package com.kowalczyk.studentclasses.configuration;
 
+import com.kowalczyk.studentclasses.configuration.securitybuilders.DevHttpSecurityBuilder;
+import com.kowalczyk.studentclasses.configuration.securitybuilders.HttpSecurityBuilder;
+import com.kowalczyk.studentclasses.configuration.securitybuilders.HttpSecurityDirector;
 import com.kowalczyk.studentclasses.entity.UserData;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.repository.UserRepository;
@@ -27,20 +30,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf().disable()
-                .httpBasic()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .headers()
-                .frameOptions().disable()
-                .and()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/Student").anonymous()
-                .anyRequest().authenticated()
-                .and().build();
+        HttpSecurityBuilder builder = new DevHttpSecurityBuilder();
+        HttpSecurityDirector director = new HttpSecurityDirector(builder);
+        httpSecurity = director.construct(httpSecurity);
+        return httpSecurity.build();
     }
 
     @Bean
