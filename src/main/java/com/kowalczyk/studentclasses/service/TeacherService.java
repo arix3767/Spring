@@ -4,14 +4,11 @@ import com.kowalczyk.studentclasses.converters.TeacherConverters.TeacherDtoToTea
 import com.kowalczyk.studentclasses.converters.TeacherConverters.TeacherToTeacherDtoConverter;
 import com.kowalczyk.studentclasses.dto.TeacherDto;
 import com.kowalczyk.studentclasses.entity.Teacher;
-import com.kowalczyk.studentclasses.entity.UserData;
 import com.kowalczyk.studentclasses.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

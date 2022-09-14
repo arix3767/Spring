@@ -18,14 +18,14 @@ public class ClassRoomController {
     private final ClassRoomService classRoomService;
 
     @GetMapping
-    public ResponseEntity<List<ClassRoomDto>> getAll() {
-        List<ClassRoomDto> classRooms = classRoomService.getAll();
+    public ResponseEntity<List<ClassRoom>> getAll() {
+        List<ClassRoom> classRooms = classRoomService.getAll();
         return ResponseEntity.ok(classRooms);
     }
 
     @PostMapping
     public ResponseEntity<String> addClassRoom(@RequestBody ClassRoomDto classRoomDto) {
-        classRoomService.addClassRoom(classRoomDto);
+        classRoomService.addClassRoom(ClassRoomDtoToClassRoomConverter.INSTANCE.convert(classRoomDto));
         return ResponseEntity.ok("ClassRoom Added");
     }
 
