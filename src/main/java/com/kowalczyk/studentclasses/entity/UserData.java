@@ -1,5 +1,6 @@
 package com.kowalczyk.studentclasses.entity;
 
+import com.kowalczyk.studentclasses.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +24,5 @@ public class UserData {
     private String email;
     @Column(nullable = false)
     private String password;
+    private final Role role = Role.from(this.getClass());
 }
