@@ -6,6 +6,8 @@ import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.entity.Address;
 import com.kowalczyk.studentclasses.entity.Student;
 
+import java.util.Optional;
+
 public enum StudentToStudentDtoConverter implements Converter<Student, StudentDto> {
 
     INSTANCE;
@@ -13,18 +15,24 @@ public enum StudentToStudentDtoConverter implements Converter<Student, StudentDt
     @Override
     public StudentDto convert(Student student) {
         Address address = student.getAddress();
+        AddressDto addressDto = Optional.ofNullable(address)
+                .map(this::convertAddress).orElse(null);
         return StudentDto.builder()
                 .email(student.getEmail())
                 .name(student.getName())
                 .teacher(student.getTeacherName())
                 .rate(student.getRate())
-                .address(AddressDto.builder()
-                        .city(address.getCity())
-                        .postalCode(address.getPostalCode())
-                        .street(address.getStreet())
-                        .homeNumber(address.getHomeNumber())
-                        .flatNumber(address.getFlatNumber())
-                        .build())
+                .address(addressDto)
+                .build();
+    }
+
+    private AddressDto convertAddress(Address address) {
+        return AddressDto.builder()
+                .city(address.getCity())
+                .postalCode(address.getPostalCode())
+                .street(address.getStreet())
+                .homeNumber(address.getHomeNumber())
+                .flatNumber(address.getFlatNumber())
                 .build();
     }
 }

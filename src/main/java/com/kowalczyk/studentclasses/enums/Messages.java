@@ -14,8 +14,8 @@ public enum Messages {
     STUDENT_UPDATE_RATE_SUCCESS("Rate changed successfully"),
     USER_NOT_FOUND("User not found!"),
     STUDENT_FOUND_SUCCESS("Student found!"),
-    INTERNAL_SERVER_ERROR("Internal server error");
-
+    INTERNAL_SERVER_ERROR("Internal server error"),
+    STUDENT_MISSING_DATA("Missing data");
 
     private final String text;
 }

@@ -5,6 +5,7 @@ import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStuden
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
+import com.kowalczyk.studentclasses.exception.MissingDataException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.entity.Student;
@@ -29,6 +30,9 @@ public class StudentService {
     }
 
     public String addStudent(StudentDto studentDto) {
+        if (studentDto.getEmail() == null || studentDto.getPassword() == null) {
+            throw new MissingDataException();
+        }
         if (studentRepository.existsByEmail(studentDto.getEmail())) {
             throw new StudentAlreadyExistsException();
         }
