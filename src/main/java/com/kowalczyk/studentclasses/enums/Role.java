@@ -4,6 +4,7 @@ import com.kowalczyk.studentclasses.entity.Admin;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.entity.Teacher;
 import com.kowalczyk.studentclasses.entity.UserData;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -19,6 +20,9 @@ public enum Role {
     private static final Map<Class<? extends UserData>, Role> typesMap = new HashMap<>();
 
     private final Class<? extends UserData> type;
+
+    @Getter
+    private final String authority = "ROLE_" + name();
 
     static {
         for (Role role : values()) {

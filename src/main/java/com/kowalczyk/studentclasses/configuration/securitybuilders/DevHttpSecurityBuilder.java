@@ -1,5 +1,6 @@
 package com.kowalczyk.studentclasses.configuration.securitybuilders;
 
+import com.kowalczyk.studentclasses.enums.Role;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +30,11 @@ public class DevHttpSecurityBuilder implements HttpSecurityBuilder {
         return httpSecurity
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/student").anonymous()
+                .antMatchers(HttpMethod.GET, "/student").hasAnyRole(Role.ADMIN.name(), Role.TEACHER.name())
+                .antMatchers(HttpMethod.GET, "/student/*").hasAnyRole(Role.STUDENT.name(), Role.TEACHER.name())
+                .antMatchers(HttpMethod.PATCH, "/student/*").hasRole(Role.TEACHER.name())
+                .antMatchers("/student/*").hasRole(Role.STUDENT.name())
+                .antMatchers("/h2-console", "/h2-console/*").hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated()
                 .and();
     }
