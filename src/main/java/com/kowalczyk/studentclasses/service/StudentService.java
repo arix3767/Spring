@@ -3,19 +3,21 @@ package com.kowalczyk.studentclasses.service;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentDtoToStudentConverter;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStudentDtoConverter;
 import com.kowalczyk.studentclasses.dto.StudentDto;
+import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.MissingDataException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
-import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class StudentService {
@@ -51,7 +53,8 @@ public class StudentService {
         if (!studentRepository.existsByEmail(email)) {
             throw new UserNotFoundException();
         }
-        return StudentToStudentDtoConverter.INSTANCE.convert(studentRepository.findByEmail(email));
+        Student student = studentRepository.findByEmail(email);
+        return StudentToStudentDtoConverter.INSTANCE.convert(student);
     }
 
     public String editStudent(String email, StudentDto newStudentData) {
@@ -62,8 +65,9 @@ public class StudentService {
             throw new InvalidEmailException();
         }
         Student student = studentRepository.findByEmail(email).toBuilder()
+                .email(newStudentData.getEmail())
+                .password(newStudentData.getPassword())
                 .name(newStudentData.getName())
-                .rate(newStudentData.getRate())
                 .teacherName(newStudentData.getTeacher())
                 .build();
         encodePassword(student);
