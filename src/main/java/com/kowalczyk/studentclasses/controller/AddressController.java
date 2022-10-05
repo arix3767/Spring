@@ -1,8 +1,6 @@
 package com.kowalczyk.studentclasses.controller;
 
-import com.kowalczyk.studentclasses.converters.AddressConverters.AddressDtoToAddressConverter;
 import com.kowalczyk.studentclasses.dto.AddressDto;
-import com.kowalczyk.studentclasses.entity.Address;
 import com.kowalczyk.studentclasses.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
