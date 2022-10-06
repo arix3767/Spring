@@ -3,11 +3,13 @@ package com.kowalczyk.studentclasses.controller;
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/student")
@@ -28,7 +30,8 @@ public class StudentController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<StudentDto> findStudent(@PathVariable String email) {
+    public ResponseEntity<StudentDto> findStudent(@PathVariable String email, @RequestHeader(value = "Authorization") String auth) {
+        log.info(auth);
         StudentDto studentDto = studentService.findStudent(email);
         return ResponseEntity.ok(studentDto);
     }
