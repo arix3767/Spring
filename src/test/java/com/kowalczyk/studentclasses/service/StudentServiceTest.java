@@ -3,26 +3,26 @@ package com.kowalczyk.studentclasses.service;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentDtoToStudentConverter;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStudentDtoConverter;
 import com.kowalczyk.studentclasses.dto.StudentDto;
+import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
-import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringJUnitConfig
 class StudentServiceTest {
 
     private static final String EMAIL = "janek";
