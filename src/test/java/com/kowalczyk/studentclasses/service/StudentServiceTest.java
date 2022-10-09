@@ -9,6 +9,7 @@ import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
+import com.kowalczyk.studentclasses.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -201,6 +203,17 @@ class StudentServiceTest {
         assertThrows(UserNotFoundException.class, () -> studentService.updateRate(EMAIL, 4));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
+    }
+    @Test
+    void findAllLessThan() {
+        //given
+        List<Student> expectedStudents = new ArrayList<>();
+        float rate = buildStudent().getRate();
+        Mockito.when(studentRepository.findAllByRateLessThan(rate)).thenReturn(expectedStudents);
+        //when
+        List<StudentDto> students = studentService.findAllLessThan(rate);
+        //then
+        assertEquals(expectedStudents.size(), students.size());
     }
 
     private Student buildStudent() {
