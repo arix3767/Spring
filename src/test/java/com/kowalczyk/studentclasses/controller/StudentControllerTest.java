@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(roles = "STUDENT")
 class StudentControllerTest {
 
     private static final String EMAIL = "janek";
@@ -49,6 +52,25 @@ class StudentControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
+    void getAllStudentsWithAdminUser() throws Exception {
+        testGetAllStudentsWithAnyRole();
+    }
+
+    private void testGetAllStudentsWithAnyRole() throws Exception {
+        mockMvc.perform(get(STUDENT_PATH))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "TEACHER")
+    void getAllStudentsWithTeacherUser() throws Exception {
+        testGetAllStudentsWithAnyRole();
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMIN", "TEACHER"})
     void getAllStudentsWhenNoStudentExists() throws Exception {
         mockMvc.perform(get(STUDENT_PATH))
                 .andDo(print())
@@ -58,6 +80,7 @@ class StudentControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMIN", "TEACHER"})
     void getAllStudents() throws Exception {
         StudentDto student = buildStudent();
         studentController.addStudent(student);
@@ -76,12 +99,14 @@ class StudentControllerTest {
         return StudentDto.builder()
                 .name("Janek")
                 .email(EMAIL)
+                .password("1234")
                 .teacher("Mati")
                 .rate(5.0f)
                 .build();
     }
 
     @Test
+    @WithAnonymousUser
     void addStudent() throws Exception {
         String json = gson.toJson(buildStudent());
         mockMvc.perform(post(STUDENT_PATH)
@@ -95,6 +120,7 @@ class StudentControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     void shouldNotAddStudentWhenStudentAlreadyExists() throws Exception {
         StudentDto student = buildStudent();
         studentController.addStudent(student);
@@ -131,6 +157,7 @@ class StudentControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "TEACHER")
     void updateRate() throws Exception {
         studentController.addStudent(buildStudent());
         mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
@@ -144,6 +171,7 @@ class StudentControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "TEACHER")
     void shouldNotUpdateRateWhenStudentNotExists() throws Exception {
         mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -160,6 +188,7 @@ class StudentControllerTest {
         StudentDto updatedStudent = StudentDto.builder()
                 .name("Marek")
                 .email("marek123")
+                .password("1234")
                 .teacher("Maciek")
                 .rate(2)
                 .build();
@@ -216,7 +245,11 @@ class StudentControllerTest {
     }
 
     @Test
-    void getByEmail() throws Exception {
+    void getByEmailWithStudentRole() throws Exception {
+        testGetByEmailWithAnyRole();
+    }
+
+    private void testGetByEmailWithAnyRole() throws Exception {
         StudentDto studentDto = buildStudent();
         studentController.addStudent(studentDto);
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
@@ -228,12 +261,16 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH + ".name").value(studentDto.getName()))
                 .andExpect(jsonPath(ROOT_JSON_PATH + ".teacher").value(studentDto.getTeacher()))
                 .andExpect(jsonPath(ROOT_JSON_PATH + ".rate").value(studentDto.getRate()));
+    }
 
+    @Test
+    @WithMockUser(roles = "TEACHER")
+    void getByEmailWithTeacherRole() throws Exception {
+        testGetByEmailWithAnyRole();
     }
 
     @Test
     void shouldNotGetByEmailWhenStudentNotExists() throws Exception {
-        StudentDto studentDto = buildStudent();
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isBadRequest())

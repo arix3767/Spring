@@ -30,8 +30,7 @@ public class StudentController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<StudentDto> findStudent(@PathVariable String email, @RequestHeader(value = "Authorization") String auth) {
-        log.info(auth);
+    public ResponseEntity<StudentDto> findStudent(@PathVariable String email) {
         StudentDto studentDto = studentService.findStudent(email);
         return ResponseEntity.ok(studentDto);
     }

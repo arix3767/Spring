@@ -9,13 +9,13 @@ import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
-import com.kowalczyk.studentclasses.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
@@ -39,6 +39,7 @@ class StudentServiceTest {
     @BeforeEach
     void setup() {
         studentService = new StudentService(studentRepository, passwordEncoder);
+
     }
 
     @Test
@@ -204,6 +205,7 @@ class StudentServiceTest {
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
     }
+
     @Test
     void findAllLessThan() {
         //given
