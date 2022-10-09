@@ -13,6 +13,7 @@ public class SchoolDto {
 
     private Long id;
     private int schoolNumber;
+    private String websiteUrl;
     private AddressDto addressDto;
     private List<ClassRoomDto> classRoomDtoList;
 }

@@ -17,6 +17,7 @@ public class School {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int schoolNumber;
+    private String websiteUrl;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
     @OneToMany(mappedBy = "school")

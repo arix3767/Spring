@@ -23,6 +23,7 @@ public enum ClassRoomDtoToClassRoomConverter implements Converter<ClassRoomDto, 
                 .school(School.builder()
                         .id(schoolDto.getId())
                         .schoolNumber(schoolDto.getSchoolNumber())
+                        .websiteUrl(schoolDto.getWebsiteUrl())
                         .address(Address.builder()
                                 .id(classRoomDto.getId())
                                 .city(addressDto.getCity())
