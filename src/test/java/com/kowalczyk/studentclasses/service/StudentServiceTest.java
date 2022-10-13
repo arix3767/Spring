@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
@@ -222,6 +221,7 @@ class StudentServiceTest {
         return Student.builder()
                 .name("Janek")
                 .email(EMAIL)
+                .password("1234")
                 .teacherName("Mati")
                 .rate(5.0f)
                 .build();
@@ -231,6 +231,7 @@ class StudentServiceTest {
         return StudentDto.builder()
                 .name("janek")
                 .email(EMAIL)
+                .password("1234")
                 .teacher("Mati")
                 .rate(5.0f)
                 .build();
