@@ -3,6 +3,7 @@ package com.kowalczyk.studentclasses.service;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentDtoToStudentConverter;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStudentDtoConverter;
 import com.kowalczyk.studentclasses.dto.StudentDto;
+import com.kowalczyk.studentclasses.entity.Address;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
@@ -17,9 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

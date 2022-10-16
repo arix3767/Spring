@@ -15,5 +15,4 @@ public class ClassRoomDto {
     private int classNumber;
     private SchoolDto schoolDto;
     private TeacherDto teacherDto;
-
 }

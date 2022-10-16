@@ -19,5 +19,4 @@ public class LessonDto {
     private Subject subject;
     private LocalDateTime term;
     private String student;
-
 }
