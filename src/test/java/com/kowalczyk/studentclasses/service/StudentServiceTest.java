@@ -10,22 +10,31 @@ import com.kowalczyk.studentclasses.exception.InvalidEmailException;
 import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringJUnitConfig
 class StudentServiceTest {
 
     private static final String EMAIL = "janek";
+
+    private final MockedStatic<SecurityContextHolder> securityContextHolderMockedStatic =
+            mockStatic(SecurityContextHolder.class);
 
     @MockBean
     private StudentRepository studentRepository;
@@ -37,7 +46,11 @@ class StudentServiceTest {
     @BeforeEach
     void setup() {
         studentService = new StudentService(studentRepository, passwordEncoder);
+    }
 
+    @AfterEach
+    void cleanup() {
+        securityContextHolderMockedStatic.close();
     }
 
     @Test
@@ -67,11 +80,23 @@ class StudentServiceTest {
     @Test
     void addAnyStudent() {
         // given
+        mockSecurity();
         Mockito.when(studentRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
         // when
         studentService.addStudent(Mockito.mock(StudentDto.class));
         // then
         Mockito.verify(studentRepository).save(Mockito.any(Student.class));
+    }
+
+    private void mockSecurity() {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        securityContextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        String user = "admin";
+        when(authentication.getName()).thenReturn(user);
+        when(authentication.getPrincipal()).thenReturn(user);
+        when(authentication.isAuthenticated()).thenReturn(true);
     }
 
     @Test
