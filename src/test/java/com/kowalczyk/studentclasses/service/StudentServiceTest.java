@@ -22,6 +22,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
 
@@ -35,6 +38,9 @@ class StudentServiceTest {
 
     private final MockedStatic<SecurityContextHolder> securityContextHolderMockedStatic =
             mockStatic(SecurityContextHolder.class);
+
+    private final MockedStatic<RequestContextHolder> requestContextHolderMockedStatic =
+            mockStatic(RequestContextHolder.class);
 
     @MockBean
     private StudentRepository studentRepository;
@@ -51,6 +57,7 @@ class StudentServiceTest {
     @AfterEach
     void cleanup() {
         securityContextHolderMockedStatic.close();
+        requestContextHolderMockedStatic.close();
     }
 
     @Test
@@ -97,6 +104,11 @@ class StudentServiceTest {
         when(authentication.getName()).thenReturn(user);
         when(authentication.getPrincipal()).thenReturn(user);
         when(authentication.isAuthenticated()).thenReturn(true);
+        ServletRequestAttributes servletRequestAttributes = mock(ServletRequestAttributes.class);
+        requestContextHolderMockedStatic.when(RequestContextHolder::getRequestAttributes).thenReturn(servletRequestAttributes);
+
+
+
     }
 
     @Test
