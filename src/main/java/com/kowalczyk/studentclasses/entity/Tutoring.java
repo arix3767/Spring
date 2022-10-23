@@ -1,9 +1,9 @@
 package com.kowalczyk.studentclasses.entity;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 

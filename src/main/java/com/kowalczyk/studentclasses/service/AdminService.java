@@ -2,10 +2,11 @@ package com.kowalczyk.studentclasses.service;
 
 import com.kowalczyk.studentclasses.entity.Admin;
 import com.kowalczyk.studentclasses.repository.AdminRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor

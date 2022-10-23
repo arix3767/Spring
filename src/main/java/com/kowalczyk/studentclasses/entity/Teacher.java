@@ -1,10 +1,10 @@
 package com.kowalczyk.studentclasses.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import java.util.Objects;
 
 @Entity

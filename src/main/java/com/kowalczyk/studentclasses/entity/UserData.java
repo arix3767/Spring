@@ -1,10 +1,10 @@
 package com.kowalczyk.studentclasses.entity;
 
 import com.kowalczyk.studentclasses.enums.Role;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
