@@ -126,7 +126,7 @@ public class AddressControllerTest {
     void shouldNotDeleteAddressWhenAddressNotExists() throws Exception {
         mockMvc.perform(delete(SPECIFIC_ADDRESS_PATH))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.ADDRESS_NOT_FOUND.getText()));

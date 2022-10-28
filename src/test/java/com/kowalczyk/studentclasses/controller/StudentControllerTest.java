@@ -150,7 +150,7 @@ class StudentControllerTest {
     void shouldNotDeleteStudentWhenStudentNotExists() throws Exception {
         mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
@@ -177,7 +177,7 @@ class StudentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(1.0)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
@@ -217,7 +217,7 @@ class StudentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
@@ -273,7 +273,7 @@ class StudentControllerTest {
     void shouldNotGetByEmailWhenStudentNotExists() throws Exception {
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
 
     }
