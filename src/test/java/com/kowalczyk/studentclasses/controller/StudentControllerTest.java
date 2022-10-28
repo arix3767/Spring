@@ -82,7 +82,7 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = {"ADMIN", "TEACHER"})
     void getAllStudents() throws Exception {
-        StudentDto student = buildStudent();
+        StudentDto student = buildStudentDto();
         studentController.addStudent(student);
         mockMvc.perform(get(STUDENT_PATH))
                 .andDo(print())
@@ -95,7 +95,7 @@ class StudentControllerTest {
                 .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(student.getRate()));
     }
 
-    private StudentDto buildStudent() {
+    private StudentDto buildStudentDto() {
         return StudentDto.builder()
                 .name("Janek")
                 .email(EMAIL)
@@ -108,7 +108,7 @@ class StudentControllerTest {
     @Test
     @WithAnonymousUser
     void addStudent() throws Exception {
-        String json = gson.toJson(buildStudent());
+        String json = gson.toJson(buildStudentDto());
         mockMvc.perform(post(STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -122,7 +122,7 @@ class StudentControllerTest {
     @Test
     @WithAnonymousUser
     void shouldNotAddStudentWhenStudentAlreadyExists() throws Exception {
-        StudentDto student = buildStudent();
+        StudentDto student = buildStudentDto();
         studentController.addStudent(student);
         String json = gson.toJson(student);
         mockMvc.perform(post(STUDENT_PATH)
@@ -137,7 +137,7 @@ class StudentControllerTest {
 
     @Test
     void deleteStudent() throws Exception {
-        studentController.addStudent(buildStudent());
+        studentController.addStudent(buildStudentDto());
         mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -159,7 +159,7 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = "TEACHER")
     void updateRate() throws Exception {
-        studentController.addStudent(buildStudent());
+        studentController.addStudent(buildStudentDto());
         mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(1.0)))
@@ -193,7 +193,7 @@ class StudentControllerTest {
                 .rate(2)
                 .build();
         String json = gson.toJson(updatedStudent);
-        studentController.addStudent(buildStudent());
+        studentController.addStudent(buildStudentDto());
         mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -233,7 +233,7 @@ class StudentControllerTest {
                 .build();
         updatedStudent.setEmail(null);
         String json = gson.toJson(updatedStudent);
-        studentController.addStudent(buildStudent());
+        studentController.addStudent(buildStudentDto());
         mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -250,7 +250,7 @@ class StudentControllerTest {
     }
 
     private void testGetByEmailWithAnyRole() throws Exception {
-        StudentDto studentDto = buildStudent();
+        StudentDto studentDto = buildStudentDto();
         studentController.addStudent(studentDto);
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
