@@ -5,7 +5,9 @@ import com.kowalczyk.studentclasses.converters.AddressConverters.AddressToAddres
 import com.kowalczyk.studentclasses.dto.AddressDto;
 import com.kowalczyk.studentclasses.entity.Address;
 import com.kowalczyk.studentclasses.enums.Messages;
+import com.kowalczyk.studentclasses.exception.AddressAlreadyExistsException;
 import com.kowalczyk.studentclasses.exception.AddressNotFoundException;
+import com.kowalczyk.studentclasses.exception.StudentAlreadyExistsException;
 import com.kowalczyk.studentclasses.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,13 @@ public class AddressService {
                 .toList();
     }
 
-    public void addAddress(AddressDto addressDto) {
+    public String addAddress(AddressDto addressDto) {
+        if (addressRepository.existsByFlatNumber(addressDto.getFlatNumber())) {
+            throw new AddressAlreadyExistsException();
+        }
         Address address = AddressDtoToAddressConverter.INSTANCE.convert(addressDto);
         addressRepository.save(address);
+        return Messages.ADDRESS_ADD_SUCCESS.getText();
     }
 
     public String deleteAddress(int flatNubmer) {

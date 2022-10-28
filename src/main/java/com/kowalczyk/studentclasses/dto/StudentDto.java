@@ -14,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 public class StudentDto extends UserDataDto {
 
     private String name;
-    private String newEmail;
     private String teacher;
     private float rate;
     private AddressDto address;

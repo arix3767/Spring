@@ -1,5 +1,6 @@
 package com.kowalczyk.studentclasses.enums;
 
+import antlr.ASTNULLType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +20,9 @@ public enum Messages {
     SCHOOL_MISSING_WEBSITE("Missing school's website"),
     SCHOOL_INVALID_URL("Invalid school website's url"),
     ADDRESS_NOT_FOUND("Address not found!"),
-    ADDRESS_DELETE_SUCCESS("Address removed successfuly");
+    ADDRESS_DELETE_SUCCESS("Address removed successfully"),
+    ADDRESS_ADD_SUCCESS("Address added successfully"),
+    ADDRESS_ADD_FAILED("Address already exists!");
 
     private final String text;
 }

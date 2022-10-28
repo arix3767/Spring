@@ -29,6 +29,7 @@ public class DevHttpSecurityBuilder implements HttpSecurityBuilder {
     public HttpSecurity configureAuthorization(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST,".address").hasRole(Role.STUDENT.name())
                 .antMatchers(HttpMethod.POST, "/student").anonymous()
                 .antMatchers(HttpMethod.GET, "/student").hasAnyRole(Role.ADMIN.name(), Role.TEACHER.name())
                 .antMatchers(HttpMethod.GET, "/student/*").hasAnyRole(Role.STUDENT.name(), Role.TEACHER.name())

@@ -19,6 +19,7 @@ public enum StudentToStudentDtoConverter implements Converter<Student, StudentDt
                 .map(this::convertAddress).orElse(null);
         return StudentDto.builder()
                 .email(student.getEmail())
+                .password(student.getPassword())
                 .name(student.getName())
                 .teacher(student.getTeacherName())
                 .rate(student.getRate())

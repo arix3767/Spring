@@ -23,8 +23,8 @@ public class AddressController {
 
     @PostMapping
     public ResponseEntity<String> addAddress(@RequestBody AddressDto addressDto) {
-        addressService.addAddress(addressDto);
-        return ResponseEntity.ok("Address added");
+        String message = addressService.addAddress(addressDto);
+        return ResponseEntity.ok(message);
     }
 
     @DeleteMapping("/{flatNumber}")
