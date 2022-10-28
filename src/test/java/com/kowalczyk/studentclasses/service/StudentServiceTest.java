@@ -1,9 +1,7 @@
 package com.kowalczyk.studentclasses.service;
 
-import com.kowalczyk.studentclasses.converters.StudentConverters.StudentDtoToStudentConverter;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStudentDtoConverter;
 import com.kowalczyk.studentclasses.dto.StudentDto;
-import com.kowalczyk.studentclasses.entity.Address;
 import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.exception.InvalidEmailException;
@@ -22,11 +20,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,6 +35,10 @@ import static org.mockito.Mockito.*;
 class StudentServiceTest {
 
     private static final String EMAIL = "janek";
+    private static final String NAME = "Janek";
+    private static final String PASSWORD = "1234";
+    private static final String TEACHER = "Mati";
+    private static final float RATE = 5.0f;
 
     private final MockedStatic<SecurityContextHolder> securityContextHolderMockedStatic =
             mockStatic(SecurityContextHolder.class);
@@ -90,7 +94,7 @@ class StudentServiceTest {
         mockSecurity();
         Mockito.when(studentRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
         // when
-        studentService.addStudent(Mockito.mock(StudentDto.class));
+        studentService.addStudent(buildStudentDto());
         // then
         Mockito.verify(studentRepository).save(Mockito.any(Student.class));
     }
@@ -105,8 +109,13 @@ class StudentServiceTest {
         when(authentication.getPrincipal()).thenReturn(user);
         when(authentication.isAuthenticated()).thenReturn(true);
         ServletRequestAttributes servletRequestAttributes = mock(ServletRequestAttributes.class);
-        requestContextHolderMockedStatic.when(RequestContextHolder::getRequestAttributes).thenReturn(servletRequestAttributes);
-
+        requestContextHolderMockedStatic.when(RequestContextHolder::getRequestAttributes)
+                .thenReturn(servletRequestAttributes);
+        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);
+        String header = "Authorization";
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        when(request.getHeader(header)).thenReturn("1234");
 
 
     }
@@ -114,10 +123,10 @@ class StudentServiceTest {
     @Test
     void addStudent() {
         // given
+        mockSecurity();
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
-        Student student = buildStudent();
         // when
-        String message = studentService.addStudent(StudentToStudentDtoConverter.INSTANCE.convert(student));
+        String message = studentService.addStudent(buildStudentDto());
         // then
         Mockito.verify(studentRepository).save(Mockito.any(Student.class));
         assertEquals(Messages.STUDENT_ADD_SUCCESS.getText(), message);
@@ -126,10 +135,11 @@ class StudentServiceTest {
     @Test
     void shouldNotAddAlreadyExistingStudent() {
         //given
+        mockSecurity();
         Student student = buildStudent();
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
         //when
-        assertThrows(StudentAlreadyExistsException.class, () -> studentService.addStudent(StudentToStudentDtoConverter.INSTANCE.convert(student)));
+        assertThrows(StudentAlreadyExistsException.class, () -> studentService.addStudent(buildStudentDto()));
         //then
         Mockito.verify(studentRepository, Mockito.times(0)).save(student);
 
@@ -173,9 +183,10 @@ class StudentServiceTest {
     @Test
     void findStudent() {
         //given
+        mockSecurity();
         StudentDto expectedStudent = buildStudentDto();
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
-        Mockito.when(studentRepository.findByEmail(EMAIL)).thenReturn(StudentDtoToStudentConverter.INSTANCE.convert(expectedStudent));
+        Mockito.when(studentRepository.findByEmail(EMAIL)).thenReturn(buildStudent());
         //when
         StudentDto student = studentService.findStudent(EMAIL);
         //then
@@ -186,6 +197,7 @@ class StudentServiceTest {
     @Test
     void shouldNotFindStudentWhenStudentDoesNotExist() {
 //        give
+        mockSecurity();
         Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
 //        when
         assertThrows(UserNotFoundException.class, () -> studentService.findStudent(EMAIL));
@@ -255,21 +267,21 @@ class StudentServiceTest {
 
     private Student buildStudent() {
         return Student.builder()
-                .name("Janek")
+                .name(NAME)
                 .email(EMAIL)
-                .password("1234")
-                .teacherName("Mati")
-                .rate(5.0f)
+                .password(PASSWORD)
+                .teacherName(TEACHER)
+                .rate(RATE)
                 .build();
     }
 
     private StudentDto buildStudentDto() {
         return StudentDto.builder()
-                .name("janek")
+                .name(NAME)
                 .email(EMAIL)
-                .password("1234")
-                .teacher("Mati")
-                .rate(5.0f)
+                .password(PASSWORD)
+                .teacher(TEACHER)
+                .rate(RATE)
                 .build();
     }
 }
