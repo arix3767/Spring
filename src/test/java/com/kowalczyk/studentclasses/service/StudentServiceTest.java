@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -92,7 +93,7 @@ class StudentServiceTest {
     void addAnyStudent() {
         // given
         mockSecurity();
-        Mockito.when(studentRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
         // when
         studentService.addStudent(buildStudentDto());
         // then
@@ -124,7 +125,7 @@ class StudentServiceTest {
     void addStudent() {
         // given
         mockSecurity();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
         // when
         String message = studentService.addStudent(buildStudentDto());
         // then
@@ -137,7 +138,7 @@ class StudentServiceTest {
         //given
         mockSecurity();
         Student student = buildStudent();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
+        Mockito.when(studentRepository.existsById(student.getId())).thenReturn(true);
         //when
         assertThrows(StudentAlreadyExistsException.class, () -> studentService.addStudent(buildStudentDto()));
         //then
@@ -148,12 +149,17 @@ class StudentServiceTest {
     @Test
     void editStudent() {
         // given
-        Student student = buildStudent();
-        Student editedStudent = buildStudent().toBuilder().rate(2.0f).build();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
-        Mockito.when(studentRepository.findByEmail(EMAIL)).thenReturn(student);
+        Student student = buildStudent().toBuilder()
+                .id(1L)
+                .build();
+        Student editedStudent = buildStudent().toBuilder()
+                .id(1L)
+                .rate(2.0f)
+                .build();
+        Mockito.when(studentRepository.existsById(student.getId())).thenReturn(true);
+        Mockito.when(studentRepository.findById(student.getId())).thenReturn(Optional.of(student));
         //when
-        String message = studentService.editStudent(EMAIL, StudentToStudentDtoConverter.INSTANCE.convert(editedStudent));
+        String message = studentService.editStudent(student.getId(), StudentToStudentDtoConverter.INSTANCE.convert(editedStudent));
         //then
         Mockito.verify(studentRepository).save(Mockito.any(Student.class));
         assertEquals(Messages.STUDENT_EDIT_SUCCESS.getText(), message);
@@ -162,9 +168,9 @@ class StudentServiceTest {
     @Test
     void shouldNotEditStudentWhenStudentDoesNotExist() {
 //        given
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
 //        when
-        assertThrows(UserNotFoundException.class, () -> studentService.editStudent(null, buildStudentDto()));
+        assertThrows(UserNotFoundException.class, () -> studentService.editStudent(1, buildStudentDto()));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
     }
@@ -172,25 +178,34 @@ class StudentServiceTest {
     @Test
     void shouldNotEditStudentWhenEmailIsNull() {
 //        given
-        Student editedStudent = buildStudent().toBuilder().email(null).build();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
+        Student editedStudent = buildStudent().toBuilder()
+                .id(1L)
+                .email(null)
+                .build();
+        StudentDto editedStudentDto = StudentToStudentDtoConverter.INSTANCE.convert(editedStudent);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(true);
 //        when
-        assertThrows(InvalidEmailException.class, () -> studentService.editStudent(EMAIL, StudentToStudentDtoConverter.INSTANCE.convert(editedStudent)));
+        assertThrows(InvalidEmailException.class, () -> studentService.editStudent(editedStudent.getId(), editedStudentDto));
 //        then
-        Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
+        Mockito.verify(studentRepository, Mockito.never()).save(Mockito.any(Student.class));
     }
 
     @Test
     void findStudent() {
         //given
         mockSecurity();
-        StudentDto expectedStudent = buildStudentDto();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
-        Mockito.when(studentRepository.findByEmail(EMAIL)).thenReturn(buildStudent());
+        StudentDto expectedStudent = buildStudentDto().toBuilder()
+                .id(1L)
+                .build();
+        Mockito.when(studentRepository.existsById(expectedStudent.getId())).thenReturn(true);
+        Mockito.when(studentRepository.findById(expectedStudent.getId())).thenReturn(Optional.of(buildStudent()
+                .toBuilder()
+                .id(1L)
+                .build()));
         //when
-        StudentDto student = studentService.findStudent(EMAIL);
+        StudentDto student = studentService.findStudent(expectedStudent.getId());
         //then
-        Mockito.verify(studentRepository).findByEmail(EMAIL);
+        Mockito.verify(studentRepository).findById(expectedStudent.getId());
         assertEquals(expectedStudent, student);
     }
 
@@ -198,21 +213,23 @@ class StudentServiceTest {
     void shouldNotFindStudentWhenStudentDoesNotExist() {
 //        give
         mockSecurity();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
 //        when
-        assertThrows(UserNotFoundException.class, () -> studentService.findStudent(EMAIL));
+        assertThrows(UserNotFoundException.class, () -> studentService.findStudent(1));
 //        then
-        Mockito.verify(studentRepository, Mockito.times(0)).findByEmail(EMAIL);
+        Mockito.verify(studentRepository, Mockito.times(1)).findById(anyLong());
     }
 
     @Test
     void deleteStudent() {
         //given
-        Student student = buildStudent();
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
-        Mockito.when(studentRepository.findByEmail(EMAIL)).thenReturn(student);
+        Student student = buildStudent().toBuilder()
+                .id(1L)
+                .build();
+        Mockito.when(studentRepository.existsById(student.getId())).thenReturn(true);
+        Mockito.when(studentRepository.findById(student.getId())).thenReturn(Optional.of(student));
         //when
-        String message = studentService.deleteStudent(EMAIL);
+        String message = studentService.deleteStudent(student.getId());
         //then
         Mockito.verify(studentRepository).delete(student);
         assertEquals(Messages.STUDENT_DELETE_SUCCESS.getText(), message);
@@ -221,9 +238,9 @@ class StudentServiceTest {
     @Test
     void shouldNotDeleteStudentWhenStudentDoesNotExist() {
 //        given
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
 //        when
-        assertThrows(UserNotFoundException.class, () -> studentService.deleteStudent(EMAIL));
+        assertThrows(UserNotFoundException.class, () -> studentService.deleteStudent(1));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).delete(Mockito.any(Student.class));
     }
@@ -231,13 +248,15 @@ class StudentServiceTest {
     @Test
     void updateRate() {
 //        given
-        Student student = buildStudent();
+        Student student = buildStudent().toBuilder()
+                .id(1L)
+                .build();
         float oldRate = student.getRate();
         float newRate = 4;
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(true);
-        Mockito.when(studentRepository.findByEmail(EMAIL)).thenReturn(student);
+        Mockito.when(studentRepository.existsById(student.getId())).thenReturn(true);
+        Mockito.when(studentRepository.findById(student.getId())).thenReturn(Optional.of(student));
 //        when
-        String message = studentService.updateRate(EMAIL, newRate);
+        String message = studentService.updateRate(student.getId(), newRate);
 //        then
         assertNotEquals(oldRate, newRate);
         assertEquals(Messages.STUDENT_UPDATE_RATE_SUCCESS.getText(), message);
@@ -246,9 +265,9 @@ class StudentServiceTest {
     @Test
     void shouldNotUpdateRateWhenStudentDoesNotExist() {
 //        given
-        Mockito.when(studentRepository.existsByEmail(EMAIL)).thenReturn(false);
+        Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
 //        when
-        assertThrows(UserNotFoundException.class, () -> studentService.updateRate(EMAIL, 4));
+        assertThrows(UserNotFoundException.class, () -> studentService.updateRate(1, 4));
 //        then
         Mockito.verify(studentRepository, Mockito.times(0)).save(Mockito.any(Student.class));
     }

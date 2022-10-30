@@ -29,27 +29,27 @@ public class StudentController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<StudentDto> findStudent(@PathVariable String email) {
-        StudentDto studentDto = studentService.findStudent(email);
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentDto> findStudent(@PathVariable long id) {
+        StudentDto studentDto = studentService.findStudent(id);
         return ResponseEntity.ok(studentDto);
     }
 
-    @PutMapping("/{email}")
-    public ResponseEntity<String> editStudent(@PathVariable String email, @RequestBody StudentDto newStudentData) {
-        String message = studentService.editStudent(email, newStudentData);
+    @PutMapping("/{id}")
+    public ResponseEntity<String> editStudent(@PathVariable long id, @RequestBody StudentDto newStudentData) {
+        String message = studentService.editStudent(id, newStudentData);
         return ResponseEntity.ok(message);
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity<String> deleteStudent(@PathVariable String email) {
-        String message = studentService.deleteStudent(email);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable long id) {
+        String message = studentService.deleteStudent(id);
         return ResponseEntity.ok(message);
     }
 
-    @PatchMapping("/{email}")
-    public ResponseEntity<String> updateRate(@PathVariable String email, @RequestBody float rate) {
-        String message = studentService.updateRate(email, rate);
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateRate(@PathVariable long id, @RequestBody float rate) {
+        String message = studentService.updateRate(id, rate);
         return ResponseEntity.ok(message);
     }
 }

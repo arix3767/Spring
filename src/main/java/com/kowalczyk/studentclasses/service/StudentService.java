@@ -44,7 +44,7 @@ public class StudentService {
             log.error("Cannot add student. Missing credentials.");
             throw new MissingDataException();
         }
-        if (studentRepository.existsByEmail(studentDto.getEmail())) {
+        if (studentRepository.existsById(studentDto.getId())) {
             log.error("Cannot add student, email {} exists in database.", studentDto.getEmail());
             throw new StudentAlreadyExistsException();
         }
@@ -71,28 +71,23 @@ public class StudentService {
         student.setPassword(encodedPassword);
     }
 
-    public StudentDto findStudent(String email) {
-        log.info("Looking for student with email {}", email);
+    public StudentDto findStudent(long id) {
+        log.info("Looking for student with id {}", id);
         logSecurityInfo();
-        if (!studentRepository.existsByEmail(email)) {
-            log.error("Cannot find student.");
-            throw new UserNotFoundException();
-        }
-        Student student = studentRepository.findByEmail(email);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
         return StudentToStudentDtoConverter.INSTANCE.convert(student);
     }
 
-    public String editStudent(String email, StudentDto newStudentData) {
-        log.info("Editing student with email {}...", email);
-        if (!studentRepository.existsByEmail(email)) {
-            log.error("Cannot edit student. Student not found.");
-            throw new UserNotFoundException();
-        }
+    public String editStudent(long id, StudentDto newStudentData) {
+        log.info("Editing student with id {}...", id);
         if (newStudentData.getEmail() == null) {
             log.error("Cannot edit student. Email must not be null.");
             throw new InvalidEmailException();
         }
-        Student student = studentRepository.findByEmail(email).toBuilder()
+        Student student = studentRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new)
+                .toBuilder()
                 .email(newStudentData.getEmail())
                 .password(newStudentData.getPassword())
                 .name(newStudentData.getName())
@@ -104,24 +99,18 @@ public class StudentService {
         return Messages.STUDENT_EDIT_SUCCESS.getText();
     }
 
-    public String deleteStudent(String email) {
-        log.info("Deleting student with email {}...", email);
-        if (!studentRepository.existsByEmail(email)) {
-            log.error("Cannot delete student. Student not found");
-            throw new UserNotFoundException();
-        }
-        Student student = studentRepository.findByEmail(email);
+    public String deleteStudent(long id) {
+        log.info("Deleting student with id {}...", id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
         studentRepository.delete(student);
         return Messages.STUDENT_DELETE_SUCCESS.getText();
     }
 
-    public String updateRate(String email, float rate) {
-        log.info("Updating rate to {} for student with email {}...", rate, email);
-        if (!studentRepository.existsByEmail(email)) {
-            log.error("Cannot update student's rate. Student not found.");
-            throw new UserNotFoundException();
-        }
-        Student student = studentRepository.findByEmail(email);
+    public String updateRate(long id, float rate) {
+        log.info("Updating rate to {} for student with id {}...", rate, id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
         student.setRate(rate);
         studentRepository.save(student);
         return Messages.STUDENT_UPDATE_RATE_SUCCESS.getText();

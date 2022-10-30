@@ -46,9 +46,9 @@ class StudentControllerTest {
                 .map(HttpEntity::getBody)
                 .filter(students -> students.size() > 0)
                 .map(studentDtoList -> studentDtoList.stream()
-                        .map(StudentDto::getEmail)
+                        .map(StudentDto::getId)
                         .toList())
-                .ifPresent(emails -> emails.forEach(studentController::deleteStudent));
+                .ifPresent(ids -> ids.forEach(studentController::deleteStudent));
     }
 
     @Test

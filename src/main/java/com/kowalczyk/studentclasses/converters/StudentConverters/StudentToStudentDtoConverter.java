@@ -18,6 +18,7 @@ public enum StudentToStudentDtoConverter implements Converter<Student, StudentDt
         AddressDto addressDto = Optional.ofNullable(address)
                 .map(this::convertAddress).orElse(null);
         return StudentDto.builder()
+                .id(student.getId())
                 .email(student.getEmail())
                 .password(student.getPassword())
                 .name(student.getName())
