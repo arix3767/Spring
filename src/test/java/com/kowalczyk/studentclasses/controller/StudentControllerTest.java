@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -27,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(roles = "STUDENT")
 class StudentControllerTest {
 
-    private static final String EMAIL = "janek";
+    private static final Long ID = 2L;
     private static final String STUDENT_PATH = "/student";
-    public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/" + EMAIL;
+    public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/" + ID;
     private static final String ROOT_JSON_PATH = "$";
     private static final String STUDENT_JSON_PATH = "$[0]";
 
@@ -82,23 +83,24 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = {"ADMIN", "TEACHER"})
     void getAllStudents() throws Exception {
-        StudentDto student = buildStudentDto();
-        studentController.addStudent(student);
+        StudentDto studentDto = buildStudentDto();
+        studentController.addStudent(studentDto);
         mockMvc.perform(get(STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(STUDENT_JSON_PATH).exists())
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".email").value(EMAIL))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(student.getName()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".teacher").value(student.getTeacher()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(student.getRate()));
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".id").value(studentDto.getId()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(studentDto.getName()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".teacher").value(studentDto.getTeacher()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(studentDto.getRate()));
     }
 
     private StudentDto buildStudentDto() {
         return StudentDto.builder()
+                .id(ID)
                 .name("Janek")
-                .email(EMAIL)
+                .email("janek")
                 .password("1234")
                 .teacher("Mati")
                 .rate(5.0f)
@@ -122,9 +124,9 @@ class StudentControllerTest {
     @Test
     @WithAnonymousUser
     void shouldNotAddStudentWhenStudentAlreadyExists() throws Exception {
-        StudentDto student = buildStudentDto();
-        studentController.addStudent(student);
-        String json = gson.toJson(student);
+        StudentDto studentDto = buildStudentDto();
+        studentController.addStudent(studentDto);
+        String json = gson.toJson(studentDto);
         mockMvc.perform(post(STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -246,10 +248,10 @@ class StudentControllerTest {
 
     @Test
     void getByEmailWithStudentRole() throws Exception {
-        testGetByEmailWithAnyRole();
+        testGetByIdWithAnyRole();
     }
 
-    private void testGetByEmailWithAnyRole() throws Exception {
+    private void testGetByIdWithAnyRole() throws Exception {
         StudentDto studentDto = buildStudentDto();
         studentController.addStudent(studentDto);
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
@@ -257,7 +259,7 @@ class StudentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).exists())
-                .andExpect(jsonPath(ROOT_JSON_PATH + ".email").value(EMAIL))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".id").value(studentDto.getId()))
                 .andExpect(jsonPath(ROOT_JSON_PATH + ".name").value(studentDto.getName()))
                 .andExpect(jsonPath(ROOT_JSON_PATH + ".teacher").value(studentDto.getTeacher()))
                 .andExpect(jsonPath(ROOT_JSON_PATH + ".rate").value(studentDto.getRate()));
@@ -266,11 +268,11 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = "TEACHER")
     void getByEmailWithTeacherRole() throws Exception {
-        testGetByEmailWithAnyRole();
+        testGetByIdWithAnyRole();
     }
 
     @Test
-    void shouldNotGetByEmailWhenStudentNotExists() throws Exception {
+    void shouldNotGetByIdWhenStudentNotExists() throws Exception {
         mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isNotFound())
