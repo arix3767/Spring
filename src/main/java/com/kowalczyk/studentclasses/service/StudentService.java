@@ -45,7 +45,7 @@ public class StudentService {
             throw new MissingDataException();
         }
         if (studentRepository.existsById(studentDto.getId())) {
-            log.error("Cannot add student, email {} exists in database.", studentDto.getEmail());
+            log.error("Cannot add student, id {} exists in database.", studentDto.getId());
             throw new StudentAlreadyExistsException();
         }
         Student student = StudentDtoToStudentConverter.INSTANCE.convert(studentDto);
