@@ -13,11 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,7 +32,7 @@ class StudentControllerTest {
 
     private static final Long ID = 2L;
     private static final String STUDENT_PATH = "/student";
-    public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/" + ID;
+    public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/%d";
     private static final String ROOT_JSON_PATH = "$";
     private static final String STUDENT_JSON_PATH = "$[0]";
 
@@ -83,17 +85,18 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = {"ADMIN", "TEACHER"})
     void getAllStudents() throws Exception {
-        StudentDto studentDto = buildStudentDto();
-        studentController.addStudent(studentDto);
+        StudentDto studentToAdd = buildStudentDto();
+        StudentDto addedStudent = studentController.addStudent(studentToAdd).getBody();
+        assertNotNull(addedStudent);
         mockMvc.perform(get(STUDENT_PATH))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(STUDENT_JSON_PATH).exists())
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".id").value(studentDto.getId()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(studentDto.getName()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".teacher").value(studentDto.getTeacher()))
-                .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(studentDto.getRate()));
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".id").value(addedStudent.getId()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".name").value(addedStudent.getName()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".teacher").value(addedStudent.getTeacher()))
+                .andExpect(jsonPath(STUDENT_JSON_PATH + ".rate").value(addedStudent.getRate()));
     }
 
     private StudentDto buildStudentDto() {
@@ -110,15 +113,23 @@ class StudentControllerTest {
     @Test
     @WithAnonymousUser
     void addStudent() throws Exception {
-        String json = gson.toJson(buildStudentDto());
-        mockMvc.perform(post(STUDENT_PATH)
+        StudentDto studentDto = buildStudentDto();
+        String json = gson.toJson(studentDto);
+        MvcResult mvcResult = mockMvc.perform(post(STUDENT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
-                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_ADD_SUCCESS.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).exists())
+                .andReturn();
+        String responseJson = mvcResult.getResponse().getContentAsString();
+        StudentDto addedStudent = gson.fromJson(responseJson, StudentDto.class);
+        assertNotNull(addedStudent.getId());
+        assertEquals(studentDto.getName(), addedStudent.getName());
+        assertEquals(studentDto.getEmail(), addedStudent.getEmail());
+        assertEquals(studentDto.getTeacher(), addedStudent.getTeacher());
+        assertEquals(studentDto.getRate(), addedStudent.getRate());
     }
 
     @Test
@@ -133,14 +144,15 @@ class StudentControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
-                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).exists())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_ADD_FAILED.getText()));
     }
 
     @Test
     void deleteStudent() throws Exception {
-        studentController.addStudent(buildStudentDto());
-        mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
+        StudentDto studentDto = studentController.addStudent(buildStudentDto()).getBody();
+        assertNotNull(studentDto);
+        mockMvc.perform(delete(getStudentPath(studentDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
@@ -148,9 +160,13 @@ class StudentControllerTest {
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.STUDENT_DELETE_SUCCESS.getText()));
     }
 
+    private String getStudentPath(StudentDto studentDto) {
+        return String.format(SPECIFIC_STUDENT_PATH, studentDto.getId());
+    }
+
     @Test
     void shouldNotDeleteStudentWhenStudentNotExists() throws Exception {
-        mockMvc.perform(delete(SPECIFIC_STUDENT_PATH))
+        mockMvc.perform(delete(getStudentPath(buildStudentDto())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
@@ -161,8 +177,9 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = "TEACHER")
     void updateRate() throws Exception {
-        studentController.addStudent(buildStudentDto());
-        mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
+        StudentDto studentDto = studentController.addStudent(buildStudentDto()).getBody();
+        assertNotNull(studentDto);
+        mockMvc.perform(patch(getStudentPath(studentDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(1.0)))
                 .andDo(print())
@@ -175,7 +192,7 @@ class StudentControllerTest {
     @Test
     @WithMockUser(roles = "TEACHER")
     void shouldNotUpdateRateWhenStudentNotExists() throws Exception {
-        mockMvc.perform(patch(SPECIFIC_STUDENT_PATH)
+        mockMvc.perform(patch(getStudentPath(buildStudentDto()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(1.0)))
                 .andDo(print())
@@ -195,8 +212,9 @@ class StudentControllerTest {
                 .rate(2)
                 .build();
         String json = gson.toJson(updatedStudent);
-        studentController.addStudent(buildStudentDto());
-        mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
+        StudentDto studentDto = studentController.addStudent(buildStudentDto()).getBody();
+        assertNotNull(studentDto);
+        mockMvc.perform(put(getStudentPath(studentDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -209,13 +227,14 @@ class StudentControllerTest {
     @Test
     void shouldNotEditStudentWhenStudentNotExists() throws Exception {
         StudentDto updatedStudent = StudentDto.builder()
+                .id(ID)
                 .name("Marek")
                 .email("marek123")
                 .teacher("Maciek")
                 .rate(2)
                 .build();
         String json = gson.toJson(updatedStudent);
-        mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
+        mockMvc.perform(put(getStudentPath(updatedStudent))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -235,8 +254,9 @@ class StudentControllerTest {
                 .build();
         updatedStudent.setEmail(null);
         String json = gson.toJson(updatedStudent);
-        studentController.addStudent(buildStudentDto());
-        mockMvc.perform(put(SPECIFIC_STUDENT_PATH)
+        StudentDto studentDto = studentController.addStudent(buildStudentDto()).getBody();
+        assertNotNull(studentDto);
+        mockMvc.perform(put(getStudentPath(studentDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
@@ -252,17 +272,18 @@ class StudentControllerTest {
     }
 
     private void testGetByIdWithAnyRole() throws Exception {
-        StudentDto studentDto = buildStudentDto();
-        studentController.addStudent(studentDto);
-        mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
+        StudentDto studentToAdd = buildStudentDto();
+        StudentDto addedStudent = studentController.addStudent(studentToAdd).getBody();
+        assertNotNull(addedStudent);
+        mockMvc.perform(get(getStudentPath(addedStudent)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).exists())
-                .andExpect(jsonPath(ROOT_JSON_PATH + ".id").value(studentDto.getId()))
-                .andExpect(jsonPath(ROOT_JSON_PATH + ".name").value(studentDto.getName()))
-                .andExpect(jsonPath(ROOT_JSON_PATH + ".teacher").value(studentDto.getTeacher()))
-                .andExpect(jsonPath(ROOT_JSON_PATH + ".rate").value(studentDto.getRate()));
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".id").value(addedStudent.getId()))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".name").value(addedStudent.getName()))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".teacher").value(addedStudent.getTeacher()))
+                .andExpect(jsonPath(ROOT_JSON_PATH + ".rate").value(addedStudent.getRate()));
     }
 
     @Test
@@ -273,7 +294,7 @@ class StudentControllerTest {
 
     @Test
     void shouldNotGetByIdWhenStudentNotExists() throws Exception {
-        mockMvc.perform(get(SPECIFIC_STUDENT_PATH))
+        mockMvc.perform(get(getStudentPath(buildStudentDto())))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));

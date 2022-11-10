@@ -1,6 +1,7 @@
 package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.dto.StudentDto;
+import com.kowalczyk.studentclasses.entity.Student;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,9 +25,9 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addStudent(@RequestBody StudentDto studentDto) {
-        String message = studentService.addStudent(studentDto);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<StudentDto> addStudent(@RequestBody StudentDto studentDto) {
+        StudentDto student = studentService.addStudent(studentDto);
+        return ResponseEntity.ok(student);
     }
 
     @GetMapping("/{id}")

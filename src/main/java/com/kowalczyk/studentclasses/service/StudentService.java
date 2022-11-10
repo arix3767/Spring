@@ -37,7 +37,7 @@ public class StudentService {
                 .toList();
     }
 
-    public String addStudent(StudentDto studentDto) {
+    public StudentDto addStudent(StudentDto studentDto) {
         log.info("Adding student...");
         logSecurityInfo();
         if (studentDto.getEmail() == null || studentDto.getPassword() == null) {
@@ -51,7 +51,7 @@ public class StudentService {
         Student student = StudentDtoToStudentConverter.INSTANCE.convert(studentDto);
         encodePassword(student);
         studentRepository.save(student);
-        return Messages.STUDENT_ADD_SUCCESS.getText();
+        return StudentToStudentDtoConverter.INSTANCE.convert(student);
     }
 
     private void logSecurityInfo() {

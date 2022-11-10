@@ -127,10 +127,9 @@ class StudentServiceTest {
         mockSecurity();
         Mockito.when(studentRepository.existsById(anyLong())).thenReturn(false);
         // when
-        String message = studentService.addStudent(buildStudentDto());
+        StudentDto studentDto = studentService.addStudent(buildStudentDto());
         // then
         Mockito.verify(studentRepository).save(Mockito.any(Student.class));
-        assertEquals(Messages.STUDENT_ADD_SUCCESS.getText(), message);
     }
 
     @Test
