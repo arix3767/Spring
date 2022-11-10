@@ -4,8 +4,11 @@ import com.kowalczyk.studentclasses.converters.Converter;
 import com.kowalczyk.studentclasses.dto.AddressDto;
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.entity.Address;
+import com.kowalczyk.studentclasses.entity.School;
 import com.kowalczyk.studentclasses.entity.Student;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public enum StudentDtoToStudentConverter implements Converter<StudentDto, Student> {
@@ -27,7 +30,6 @@ public enum StudentDtoToStudentConverter implements Converter<StudentDto, Studen
                 .address(address)
                 .build();
     }
-
     private Address convertAddress(AddressDto addressDto) {
         return Address.builder()
                 .city(addressDto.getCity())
