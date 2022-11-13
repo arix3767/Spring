@@ -22,7 +22,8 @@ public enum Messages {
     ADDRESS_NOT_FOUND("Address not found!"),
     ADDRESS_DELETE_SUCCESS("Address removed successfully"),
     ADDRESS_ADD_SUCCESS("Address added successfully"),
-    ADDRESS_ADD_FAILED("Address already exists!");
+    ADDRESS_ADD_FAILED("Address already exists!"),
+    AUTHORIZATION_FAILED("Authorization failed");
 
     private final String text;
 }

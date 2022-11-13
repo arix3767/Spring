@@ -137,7 +137,7 @@ class StudentServiceTest {
         //given
         mockSecurity();
         Student student = buildStudent();
-        Mockito.when(studentRepository.existsById(student.getId())).thenReturn(true);
+        Mockito.when(studentRepository.existsByEmail(student.getEmail())).thenReturn(true);
         //when
         assertThrows(StudentAlreadyExistsException.class, () -> studentService.addStudent(buildStudentDto()));
         //then

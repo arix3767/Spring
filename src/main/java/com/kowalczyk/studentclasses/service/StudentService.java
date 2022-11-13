@@ -44,8 +44,8 @@ public class StudentService {
             log.error("Cannot add student. Missing credentials.");
             throw new MissingDataException();
         }
-        if (studentRepository.existsById(studentDto.getId())) {
-            log.error("Cannot add student, id {} exists in database.", studentDto.getId());
+        if (studentRepository.existsByEmail(studentDto.getEmail())) {
+            log.error("Cannot add student, email {} exists in database.", studentDto.getEmail());
             throw new StudentAlreadyExistsException();
         }
         Student student = StudentDtoToStudentConverter.INSTANCE.convert(studentDto);

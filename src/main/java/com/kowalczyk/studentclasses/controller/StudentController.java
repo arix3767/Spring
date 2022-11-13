@@ -1,7 +1,7 @@
 package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.dto.StudentDto;
-import com.kowalczyk.studentclasses.entity.Student;
+import com.kowalczyk.studentclasses.service.AuthorizationService;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +17,7 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
+    private final AuthorizationService authorizationService;
 
     @GetMapping
     public ResponseEntity<List<StudentDto>> getAll() {
@@ -32,24 +33,28 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> findStudent(@PathVariable long id) {
+        authorizationService.authorizeUser(id);
         StudentDto studentDto = studentService.findStudent(id);
         return ResponseEntity.ok(studentDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> editStudent(@PathVariable long id, @RequestBody StudentDto newStudentData) {
+        authorizationService.authorizeUser(id);
         String message = studentService.editStudent(id, newStudentData);
         return ResponseEntity.ok(message);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable long id) {
+        authorizationService.authorizeUser(id);
         String message = studentService.deleteStudent(id);
         return ResponseEntity.ok(message);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateRate(@PathVariable long id, @RequestBody float rate) {
+        authorizationService.authorizeUser(id);
         String message = studentService.updateRate(id, rate);
         return ResponseEntity.ok(message);
     }

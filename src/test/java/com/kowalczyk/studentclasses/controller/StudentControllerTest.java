@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,9 +33,10 @@ class StudentControllerTest {
 
     private static final Long ID = 2L;
     private static final String STUDENT_PATH = "/student";
-    public static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/%d";
+    private static final String SPECIFIC_STUDENT_PATH = STUDENT_PATH + "/%d";
     private static final String ROOT_JSON_PATH = "$";
     private static final String STUDENT_JSON_PATH = "$[0]";
+    private static final String HACKER_EMAIL = "maciek1234";
 
     @Autowired
     private MockMvc mockMvc;
@@ -299,5 +301,21 @@ class StudentControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
 
+    }
+
+    @Test
+    void shouldNotGetStudentIfNotHimId() throws Exception {
+        StudentDto victimStudentToAdd = buildStudentDto();
+        StudentDto hackerStudentToAdd = buildStudentDto().toBuilder()
+                .email(HACKER_EMAIL)
+                .build();
+        StudentDto victimStudent = studentController.addStudent(victimStudentToAdd).getBody();
+        StudentDto hackerStudent = studentController.addStudent(hackerStudentToAdd).getBody();
+        assertNotNull(victimStudent);
+        mockMvc.perform(get(getStudentPath(victimStudent)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.AUTHORIZATION_FAILED.getText()));
     }
 }
