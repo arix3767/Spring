@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(roles = "STUDENT")
+@WithMockUser(roles = "STUDENT", username = "janek")
 class StudentControllerTest {
 
     private static final Long ID = 2L;
@@ -37,6 +36,7 @@ class StudentControllerTest {
     private static final String ROOT_JSON_PATH = "$";
     private static final String STUDENT_JSON_PATH = "$[0]";
     private static final String HACKER_EMAIL = "maciek1234";
+    private static final String EMAIL = "janek";
 
     @Autowired
     private MockMvc mockMvc;
@@ -105,7 +105,7 @@ class StudentControllerTest {
         return StudentDto.builder()
                 .id(ID)
                 .name("Janek")
-                .email("janek")
+                .email(EMAIL)
                 .password("1234")
                 .teacher("Mati")
                 .rate(5.0f)
@@ -304,13 +304,14 @@ class StudentControllerTest {
     }
 
     @Test
-    void shouldNotGetStudentIfNotHimId() throws Exception {
+    @WithMockUser(username = HACKER_EMAIL, roles = "STUDENT")
+    void shouldNotGetStudentIfOtherUserAttacks() throws Exception {
         StudentDto victimStudentToAdd = buildStudentDto();
         StudentDto hackerStudentToAdd = buildStudentDto().toBuilder()
                 .email(HACKER_EMAIL)
                 .build();
         StudentDto victimStudent = studentController.addStudent(victimStudentToAdd).getBody();
-        StudentDto hackerStudent = studentController.addStudent(hackerStudentToAdd).getBody();
+        studentController.addStudent(hackerStudentToAdd).getBody();
         assertNotNull(victimStudent);
         mockMvc.perform(get(getStudentPath(victimStudent)))
                 .andDo(print())

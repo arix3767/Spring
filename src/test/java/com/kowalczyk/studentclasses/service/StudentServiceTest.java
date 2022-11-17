@@ -1,5 +1,6 @@
 package com.kowalczyk.studentclasses.service;
 
+import com.kowalczyk.studentclasses.Utils.SecurityUtils;
 import com.kowalczyk.studentclasses.converters.StudentConverters.StudentToStudentDtoConverter;
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.entity.Student;
@@ -101,24 +102,8 @@ class StudentServiceTest {
     }
 
     private void mockSecurity() {
-        SecurityContext securityContext = mock(SecurityContext.class);
-        securityContextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
-        Authentication authentication = mock(Authentication.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        String user = "admin";
-        when(authentication.getName()).thenReturn(user);
-        when(authentication.getPrincipal()).thenReturn(user);
-        when(authentication.isAuthenticated()).thenReturn(true);
-        ServletRequestAttributes servletRequestAttributes = mock(ServletRequestAttributes.class);
-        requestContextHolderMockedStatic.when(RequestContextHolder::getRequestAttributes)
-                .thenReturn(servletRequestAttributes);
-        HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-        when(servletRequestAttributes.getRequest()).thenReturn(httpServletRequest);
-        String header = "Authorization";
-        HttpServletRequest request = servletRequestAttributes.getRequest();
-        when(request.getHeader(header)).thenReturn("1234");
-
-
+        SecurityUtils.mockSecurityContextHolder(securityContextHolderMockedStatic);
+        SecurityUtils.mockServletContextHolder(requestContextHolderMockedStatic);
     }
 
     @Test
