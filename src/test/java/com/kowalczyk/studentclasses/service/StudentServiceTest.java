@@ -102,7 +102,7 @@ class StudentServiceTest {
     }
 
     private void mockSecurity() {
-        SecurityUtils.mockSecurityContextHolder(securityContextHolderMockedStatic);
+        SecurityUtils.mockSecurityContextHolder(securityContextHolderMockedStatic, EMAIL);
         SecurityUtils.mockServletContextHolder(requestContextHolderMockedStatic);
     }
 

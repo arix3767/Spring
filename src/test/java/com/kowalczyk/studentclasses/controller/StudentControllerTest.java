@@ -2,7 +2,10 @@ package com.kowalczyk.studentclasses.controller;
 
 import com.google.gson.Gson;
 import com.kowalczyk.studentclasses.dto.StudentDto;
+import com.kowalczyk.studentclasses.entity.UserData;
 import com.kowalczyk.studentclasses.enums.Messages;
+import com.kowalczyk.studentclasses.repository.StudentRepository;
+import com.kowalczyk.studentclasses.repository.UserDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,17 +47,22 @@ class StudentControllerTest {
     @Autowired
     private StudentController studentController;
     @Autowired
+    private UserDataRepository userDataRepository;
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
     private Gson gson;
 
     @BeforeEach
     void setup() {
-        Optional.ofNullable(studentController.getAll())
-                .map(HttpEntity::getBody)
-                .filter(students -> students.size() > 0)
-                .map(studentDtoList -> studentDtoList.stream()
-                        .map(StudentDto::getId)
-                        .toList())
-                .ifPresent(ids -> ids.forEach(studentController::deleteStudent));
+        List<Long> usersIds = userDataRepository.findAll().stream()
+                .map(UserData::getId)
+                .toList();
+        usersIds.forEach(userDataRepository::deleteById);
+        List<Long> studentsIds = studentRepository.findAll().stream()
+                .map(UserData::getId)
+                .toList();
+        studentsIds.forEach(studentRepository::deleteById);
     }
 
     @Test

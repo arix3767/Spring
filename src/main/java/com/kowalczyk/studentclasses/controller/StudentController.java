@@ -54,7 +54,6 @@ public class StudentController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateRate(@PathVariable long id, @RequestBody float rate) {
-        authorizationService.authorizeUser(id);
         String message = studentService.updateRate(id, rate);
         return ResponseEntity.ok(message);
     }

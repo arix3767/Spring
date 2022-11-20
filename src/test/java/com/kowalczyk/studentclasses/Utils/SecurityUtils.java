@@ -16,14 +16,13 @@ public class SecurityUtils {
 
     private SecurityUtils() {}
 
-    public static void mockSecurityContextHolder(MockedStatic<SecurityContextHolder> securityContextHolderMockedStatic) {
+    public static void mockSecurityContextHolder(MockedStatic<SecurityContextHolder> securityContextHolderMockedStatic, String username) {
         SecurityContext securityContext = mock(SecurityContext.class);
         securityContextHolderMockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
         Authentication authentication = mock(Authentication.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
-        String user = "admin";
-        when(authentication.getName()).thenReturn(user);
-        when(authentication.getPrincipal()).thenReturn(user);
+        when(authentication.getName()).thenReturn(username);
+        when(authentication.getPrincipal()).thenReturn(username);
         when(authentication.isAuthenticated()).thenReturn(true);
     }
 
