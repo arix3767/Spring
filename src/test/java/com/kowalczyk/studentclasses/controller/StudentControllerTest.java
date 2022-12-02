@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -179,10 +177,10 @@ class StudentControllerTest {
     void shouldNotDeleteStudentWhenStudentNotExists() throws Exception {
         mockMvc.perform(delete(getStudentPath(buildStudentDto())))
                 .andDo(print())
-                .andExpect(status().isNotFound())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.AUTHORIZATION_FAILED.getText()));
     }
 
     @Test
@@ -249,10 +247,10 @@ class StudentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andDo(print())
-                .andExpect(status().isNotFound())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.AUTHORIZATION_FAILED.getText()));
     }
 
     @Test
@@ -307,8 +305,8 @@ class StudentControllerTest {
     void shouldNotGetByIdWhenStudentNotExists() throws Exception {
         mockMvc.perform(get(getStudentPath(buildStudentDto())))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.USER_NOT_FOUND.getText()));
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.AUTHORIZATION_FAILED.getText()));
 
     }
 
@@ -324,7 +322,7 @@ class StudentControllerTest {
         assertNotNull(victimStudent);
         mockMvc.perform(get(getStudentPath(victimStudent)))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isString())
                 .andExpect(jsonPath(ROOT_JSON_PATH).value(Messages.AUTHORIZATION_FAILED.getText()));
     }

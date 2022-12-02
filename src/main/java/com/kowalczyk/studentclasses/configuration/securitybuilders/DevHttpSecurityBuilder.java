@@ -32,7 +32,7 @@ public class DevHttpSecurityBuilder implements HttpSecurityBuilder {
                 .antMatchers(HttpMethod.POST,".address").hasRole(Role.STUDENT.name())
                 .antMatchers(HttpMethod.POST, "/student").anonymous()
                 .antMatchers(HttpMethod.GET, "/student").hasAnyRole(Role.ADMIN.name(), Role.TEACHER.name())
-                .antMatchers(HttpMethod.GET, "/student/*").hasAnyRole(Role.STUDENT.name(), Role.TEACHER.name())
+                .antMatchers(HttpMethod.GET, "/student/*").authenticated()
                 .antMatchers(HttpMethod.PATCH, "/student/*").hasRole(Role.TEACHER.name())
                 .antMatchers("/student/*").hasRole(Role.STUDENT.name())
                 .antMatchers("/h2-console", "/h2-console/*").hasRole(Role.ADMIN.name())
