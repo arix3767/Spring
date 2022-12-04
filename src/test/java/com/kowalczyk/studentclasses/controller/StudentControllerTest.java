@@ -2,6 +2,8 @@ package com.kowalczyk.studentclasses.controller;
 
 import com.google.gson.Gson;
 import com.kowalczyk.studentclasses.dto.StudentDto;
+import com.kowalczyk.studentclasses.dto.TeacherDto;
+import com.kowalczyk.studentclasses.entity.Teacher;
 import com.kowalczyk.studentclasses.entity.UserData;
 import com.kowalczyk.studentclasses.enums.Messages;
 import com.kowalczyk.studentclasses.repository.StudentRepository;
@@ -39,6 +41,7 @@ class StudentControllerTest {
     private static final String STUDENT_JSON_PATH = "$[0]";
     private static final String HACKER_EMAIL = "maciek1234";
     private static final String EMAIL = "janek";
+    public static final String TEACHER_EMAIL = "maciek";
 
     @Autowired
     private MockMvc mockMvc;
@@ -296,9 +299,17 @@ class StudentControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "TEACHER")
+    @WithMockUser(roles = "TEACHER", username = TEACHER_EMAIL)
     void getByEmailWithTeacherRole() throws Exception {
+        userDataRepository.save(buildTeacher());
         testGetByIdWithAnyRole();
+    }
+
+    private Teacher buildTeacher() {
+        return Teacher.builder()
+                .email(TEACHER_EMAIL)
+                .password("4567")
+                .build();
     }
 
     @Test
