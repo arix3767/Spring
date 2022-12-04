@@ -1,7 +1,7 @@
 package com.kowalczyk.studentclasses.controller;
 
+import com.kowalczyk.studentclasses.annotation.ExtendedAuthorization;
 import com.kowalczyk.studentclasses.dto.StudentDto;
-import com.kowalczyk.studentclasses.service.AuthorizationService;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +17,6 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-    private final AuthorizationService authorizationService;
 
     @GetMapping
     public ResponseEntity<List<StudentDto>> getAll() {
@@ -31,23 +30,23 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
+    @ExtendedAuthorization
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> findStudent(@PathVariable long id) {
-        authorizationService.authorizeUser(id);
         StudentDto studentDto = studentService.findStudent(id);
         return ResponseEntity.ok(studentDto);
     }
 
+    @ExtendedAuthorization
     @PutMapping("/{id}")
     public ResponseEntity<String> editStudent(@PathVariable long id, @RequestBody StudentDto newStudentData) {
-        authorizationService.authorizeUser(id);
         String message = studentService.editStudent(id, newStudentData);
         return ResponseEntity.ok(message);
     }
 
+    @ExtendedAuthorization
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable long id) {
-        authorizationService.authorizeUser(id);
         String message = studentService.deleteStudent(id);
         return ResponseEntity.ok(message);
     }

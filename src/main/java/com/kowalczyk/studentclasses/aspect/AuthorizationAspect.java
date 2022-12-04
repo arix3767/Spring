@@ -1,25 +1,30 @@
-package com.kowalczyk.studentclasses.service;
+package com.kowalczyk.studentclasses.aspect;
 
+import com.kowalczyk.studentclasses.annotation.ExtendedAuthorization;
 import com.kowalczyk.studentclasses.entity.UserData;
 import com.kowalczyk.studentclasses.enums.Role;
 import com.kowalczyk.studentclasses.exception.AuthorizationException;
 import com.kowalczyk.studentclasses.repository.UserDataRepository;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
+@Aspect
+@Component
 @RequiredArgsConstructor
-public class AuthorizationService {
+public class AuthorizationAspect {
 
     private final UserDataRepository userDataRepository;
 
-    public void authorizeUser(long id) {
+    @Before("@annotation(authorization) && args(id,..)")
+    public void authorizeUser(ExtendedAuthorization authorization, long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserData userData = userDataRepository.findByEmail(email)
