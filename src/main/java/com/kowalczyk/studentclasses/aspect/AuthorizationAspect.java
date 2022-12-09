@@ -23,6 +23,8 @@ public class AuthorizationAspect {
 
     private final UserDataRepository userDataRepository;
 
+    private static final Set<String> ALLOWED_ROLES = Set.of(Role.TEACHER.getAuthority(), Role.ADMIN.getAuthority());
+
     @Before("@annotation(authorization) && args(id,..)")
     public void authorizeUser(ExtendedAuthorization authorization, long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -32,7 +34,9 @@ public class AuthorizationAspect {
         Set<String> authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
-        if (!authorities.contains(Role.STUDENT.getAuthority())) {
+        boolean isUserAllowed = authorities.stream()
+                .anyMatch(ALLOWED_ROLES::contains);
+        if (isUserAllowed) {
             return;
         }
         if (userData.getId() != id) {
