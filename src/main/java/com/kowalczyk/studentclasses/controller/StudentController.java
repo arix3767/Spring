@@ -1,6 +1,6 @@
 package com.kowalczyk.studentclasses.controller;
 
-import com.kowalczyk.studentclasses.annotation.ExtendedAuthorization;
+import com.kowalczyk.studentclasses.annotation.StudentDataExtendedAuthorization;
 import com.kowalczyk.studentclasses.dto.StudentDto;
 import com.kowalczyk.studentclasses.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -30,21 +30,21 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
-    @ExtendedAuthorization
+    @StudentDataExtendedAuthorization
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> findStudent(@PathVariable long id) {
         StudentDto studentDto = studentService.findStudent(id);
         return ResponseEntity.ok(studentDto);
     }
 
-    @ExtendedAuthorization
+    @StudentDataExtendedAuthorization
     @PutMapping("/{id}")
     public ResponseEntity<String> editStudent(@PathVariable long id, @RequestBody StudentDto newStudentData) {
         String message = studentService.editStudent(id, newStudentData);
         return ResponseEntity.ok(message);
     }
 
-    @ExtendedAuthorization
+    @StudentDataExtendedAuthorization
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable long id) {
         String message = studentService.deleteStudent(id);

@@ -1,5 +1,6 @@
 package com.kowalczyk.studentclasses.controller;
 
+import com.kowalczyk.studentclasses.annotation.TeacherDataExtendedAuthorization;
 import com.kowalczyk.studentclasses.dto.TeacherDto;
 import com.kowalczyk.studentclasses.service.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,19 @@ public class TeacherController {
     public ResponseEntity<String> addTeacher(@RequestBody TeacherDto teacherDto) {
         teacherService.addTeacher(teacherDto);
         return ResponseEntity.ok("Teacher added");
+    }
+
+    // TODO zaimplementuj funkcjonalność
+    @TeacherDataExtendedAuthorization
+    @GetMapping("/{id}")
+    public ResponseEntity<TeacherDto> findTeacher(@PathVariable long id) {
+        return null;
+    }
+
+    // TODO zaimplementuj funkcjonalność
+    @TeacherDataExtendedAuthorization
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateTeacher(@PathVariable long id, @RequestBody TeacherDto teacherDto) {
+        return null;
     }
 }
