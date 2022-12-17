@@ -31,13 +31,15 @@ public class TeacherController {
     @TeacherDataExtendedAuthorization
     @GetMapping("/{id}")
     public ResponseEntity<TeacherDto> findTeacher(@PathVariable long id) {
-        return null;
+        TeacherDto teacherDto = teacherService.findTeacher(id);
+        return ResponseEntity.ok(teacherDto);
     }
 
     // TODO zaimplementuj funkcjonalność
     @TeacherDataExtendedAuthorization
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTeacher(@PathVariable long id, @RequestBody TeacherDto teacherDto) {
-        return null;
+    public ResponseEntity<String> updateTeacher(@PathVariable long id, @RequestBody TeacherDto newTeacherData) {
+        String message = teacherService.updateTeacher(id, newTeacherData);
+        return ResponseEntity.ok(message);
     }
 }

@@ -23,7 +23,8 @@ public enum Messages {
     ADDRESS_DELETE_SUCCESS("Address removed successfully"),
     ADDRESS_ADD_SUCCESS("Address added successfully"),
     ADDRESS_ADD_FAILED("Address already exists!"),
-    AUTHORIZATION_FAILED("Authorization failed");
+    AUTHORIZATION_FAILED("Authorization failed"),
+    TEACHER_UPDATE_SUCCESS("Teacher updated successfully");
 
     private final String text;
 }

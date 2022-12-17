@@ -1,15 +1,14 @@
 package com.kowalczyk.studentclasses.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherDto {
+public class TeacherDto extends UserDataDto {
 
     private Long id;
     private String name;
