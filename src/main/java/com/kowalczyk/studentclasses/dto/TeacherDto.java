@@ -12,5 +12,4 @@ public class TeacherDto extends UserDataDto {
 
     private Long id;
     private String name;
-    private String email;
 }

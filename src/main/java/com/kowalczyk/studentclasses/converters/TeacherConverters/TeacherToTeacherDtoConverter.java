@@ -13,6 +13,7 @@ public enum TeacherToTeacherDtoConverter implements Converter<Teacher, TeacherDt
         return TeacherDto.builder()
                 .name(teacher.getName())
                 .email(teacher.getEmail())
+                .password(teacher.getPassword())
                 .id(teacher.getId())
                 .build();
     }
