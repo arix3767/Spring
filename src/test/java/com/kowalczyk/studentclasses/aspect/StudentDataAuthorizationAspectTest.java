@@ -26,6 +26,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
 
 @SpringJUnitConfig
 public class StudentDataAuthorizationAspectTest {
@@ -63,7 +64,7 @@ public class StudentDataAuthorizationAspectTest {
         //when
         authorizationAspect.authorizeUser(authorization, student.getId());
         //then
-        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext);
+        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext, times(2));
         Mockito.verify(userDataRepository).findByEmail(EMAIL);
     }
 
@@ -100,7 +101,7 @@ public class StudentDataAuthorizationAspectTest {
         //when
         assertThrows(AuthorizationException.class, () -> authorizationAspect.authorizeUser(authorization, victimStudent.getId()));
         //then
-        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext);
+        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext, times(2));
         Mockito.verify(userDataRepository).findByEmail(hackerStudent.getEmail());
     }
 
@@ -114,7 +115,7 @@ public class StudentDataAuthorizationAspectTest {
         //when
         authorizationAspect.authorizeUser(authorization, teacher.getId());
         //then
-        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext);
+        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext, times(2));
         Mockito.verify(userDataRepository).findByEmail(EMAIL);
     }
 
@@ -148,7 +149,7 @@ public class StudentDataAuthorizationAspectTest {
         //when
         authorizationAspect.authorizeUser(authorization, admin.getId());
         //then
-        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext);
+        securityContextHolderMockedStatic.verify(SecurityContextHolder::getContext, times(2));
         Mockito.verify(userDataRepository).findByEmail(EMAIL);
     }
 
