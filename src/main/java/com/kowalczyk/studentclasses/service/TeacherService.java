@@ -37,6 +37,7 @@ public class TeacherService {
 
     public void addTeacher(TeacherDto teacherDto) {
         Teacher teacher = TeacherDtoToTeacherConverter.INSTANCE.convert(teacherDto);
+        encodePassword(teacher);
         teacherRepository.save(teacher);
     }
 
