@@ -1,7 +1,7 @@
 package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.dto.StudentDto;
-import com.kowalczyk.studentclasses.service.StudentService;
+import com.kowalczyk.studentclasses.service.RealStudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/filter")
 public class FilterController {
 
-    private final StudentService studentService;
+    private final RealStudentService studentService;
 
     @GetMapping("/lessThan")
     public ResponseEntity<List<StudentDto>> findAllLessThan(@RequestParam float rate) {

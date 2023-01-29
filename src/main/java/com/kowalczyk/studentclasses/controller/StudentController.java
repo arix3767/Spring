@@ -2,7 +2,7 @@ package com.kowalczyk.studentclasses.controller;
 
 import com.kowalczyk.studentclasses.annotation.StudentDataExtendedAuthorization;
 import com.kowalczyk.studentclasses.dto.StudentDto;
-import com.kowalczyk.studentclasses.service.StudentService;
+import com.kowalczyk.studentclasses.service.RealStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/student")
 public class StudentController {
 
-    private final StudentService studentService;
+    private final RealStudentService studentService;
 
     @GetMapping
     public ResponseEntity<List<StudentDto>> getAll() {

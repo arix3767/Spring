@@ -3,10 +3,12 @@ package com.kowalczyk.studentclasses.configuration;
 import com.kowalczyk.studentclasses.configuration.securitybuilders.DevHttpSecurityBuilder;
 import com.kowalczyk.studentclasses.configuration.securitybuilders.HttpSecurityBuilder;
 import com.kowalczyk.studentclasses.configuration.securitybuilders.HttpSecurityDirector;
+import com.kowalczyk.studentclasses.configuration.securitybuilders.ProdHttpSecurityBuilder;
 import com.kowalczyk.studentclasses.entity.UserData;
 import com.kowalczyk.studentclasses.exception.UserNotFoundException;
 import com.kowalczyk.studentclasses.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,12 +27,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(11);
     }
 
+    @Profile(Profiles.DEV)
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain devSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         HttpSecurityBuilder builder = new DevHttpSecurityBuilder();
+        return securityFilterChain(httpSecurity, builder);
+    }
+
+    private SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HttpSecurityBuilder builder) throws Exception {
         HttpSecurityDirector director = new HttpSecurityDirector(builder);
         httpSecurity = director.construct(httpSecurity);
         return httpSecurity.build();
+    }
+
+    @Profile(Profiles.PROD)
+    @Bean
+    public SecurityFilterChain prodSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        HttpSecurityBuilder builder = new ProdHttpSecurityBuilder();
+        return securityFilterChain(httpSecurity, builder);
     }
 
     @Bean

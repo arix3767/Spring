@@ -50,11 +50,11 @@ class StudentServiceTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
 
-    private StudentService studentService;
+    private RealStudentService studentService;
 
     @BeforeEach
     void setup() {
-        studentService = new StudentService(studentRepository, passwordEncoder);
+        studentService = new RealStudentService(studentRepository, passwordEncoder);
     }
 
     @AfterEach
