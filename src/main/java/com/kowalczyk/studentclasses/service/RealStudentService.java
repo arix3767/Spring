@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RequiredArgsConstructor
 @Service
-public class RealStudentService {
+public class RealStudentService implements StudentService {
 
     public static class MyCondition implements Condition {
 
@@ -43,13 +44,19 @@ public class RealStudentService {
             String[] activeProfiles = context.getEnvironment().getActiveProfiles();
             Set<String> profilesSet = Arrays.stream(activeProfiles)
                     .collect(Collectors.toSet());
-            return profilesSet.contains(Profiles.DEV) || profilesSet.contains(Profiles.PROD);
+            return !profilesSet.contains(Profiles.EXPERIMENTAL);
         }
     }
 
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @PostConstruct
+    private void setUp() {
+        log.info("{} has been initialized", this.getClass().getSimpleName());
+    }
+
+    @Override
     public List<StudentDto> getAll() {
         log.info("Fetching students...");
         return studentRepository.findAll().stream()
@@ -57,6 +64,7 @@ public class RealStudentService {
                 .toList();
     }
 
+    @Override
     public StudentDto addStudent(StudentDto studentDto) {
         log.info("Adding student...");
         logSecurityInfo();
@@ -91,6 +99,7 @@ public class RealStudentService {
         student.setPassword(encodedPassword);
     }
 
+    @Override
     public StudentDto findStudent(long id) {
         log.info("Looking for student with id {}", id);
         logSecurityInfo();
@@ -99,6 +108,7 @@ public class RealStudentService {
         return StudentToStudentDtoConverter.INSTANCE.convert(student);
     }
 
+    @Override
     public String editStudent(long id, StudentDto newStudentData) {
         log.info("Editing student with id {}...", id);
         if (newStudentData.getEmail() == null) {
@@ -119,6 +129,7 @@ public class RealStudentService {
         return Messages.STUDENT_EDIT_SUCCESS.getText();
     }
 
+    @Override
     public String deleteStudent(long id) {
         log.info("Deleting student with id {}...", id);
         Student student = studentRepository.findById(id)
@@ -127,6 +138,7 @@ public class RealStudentService {
         return Messages.STUDENT_DELETE_SUCCESS.getText();
     }
 
+    @Override
     public String updateRate(long id, float rate) {
         log.info("Updating rate to {} for student with id {}...", rate, id);
         Student student = studentRepository.findById(id)
@@ -136,30 +148,35 @@ public class RealStudentService {
         return Messages.STUDENT_UPDATE_RATE_SUCCESS.getText();
     }
 
+    @Override
     public List<StudentDto> findAllLessThan(float rate) {
         return studentRepository.findAllByRateLessThan(rate).stream()
                 .map(StudentToStudentDtoConverter.INSTANCE::convert)
                 .toList();
     }
 
+    @Override
     public List<StudentDto> findAllByRateGreaterThan(float rate) {
         return studentRepository.findAllByRateGreaterThan(rate).stream()
                 .map(StudentToStudentDtoConverter.INSTANCE::convert)
                 .toList();
     }
 
+    @Override
     public List<StudentDto> findAllByRateBetween(float lowLevel, float highLevel) {
         return studentRepository.findAllByRateBetween(lowLevel, highLevel).stream()
                 .map(StudentToStudentDtoConverter.INSTANCE::convert)
                 .toList();
     }
 
+    @Override
     public List<StudentDto> findAllByRateGreaterThanEqual(float rate) {
         return studentRepository.findAllByRateGreaterThanEqual(rate).stream()
                 .map(StudentToStudentDtoConverter.INSTANCE::convert)
                 .toList();
     }
 
+    @Override
     public List<StudentDto> findAllByRateLessThanEqual(float rate) {
         return studentRepository.findAllByRateLessThanEqual(rate).stream()
                 .map(StudentToStudentDtoConverter.INSTANCE::convert)
