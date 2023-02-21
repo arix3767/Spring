@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +66,7 @@ public class RealStudentService implements StudentService {
     }
 
     @Override
+    @Transactional
     public StudentDto addStudent(StudentDto studentDto) {
         log.info("Adding student...");
         logSecurityInfo();
